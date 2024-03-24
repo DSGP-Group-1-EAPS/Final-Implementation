@@ -41,15 +41,24 @@ def main():
         except Exception as e:
             return f'Error reading Excel file: {e}', 400
 
-        # Download training dataset from S3(s3://eapss3/Datasets/Training Dataset/training_dataset_original.xlsx)
-        # (If training dataset's last month is not == to provided dataset's month - 1), then
-        #   download prev_month_data from S3 and update that prev_month_data using the provided months data and retrain
-        #   the model for the prev_month_data and then get predictions
-        # (else)
-        #   save the current months data as the prev_month_data and get predictions as usual
+        def read_aws_config(filename):
+            aws_config = {}
+            with open(filename, 'r') as file:
+                for line in file:
+                    key, value = line.strip().split('=')
+                    aws_config[key.strip()] = value.strip()
+            return aws_config
+
+        config = read_aws_config('s3config.txt')
+        access_key = config['ACCESS_KEY']
+        secret_key = config['SECRET_KEY']
+
+        access_key = str(access_key)
+        secret_key = str(secret_key)
 
         # Add IAM Role Credentials to the session
-        s3_iam_role = access_iam_role()
+        s3_iam_role = access_iam_role(access_key, secret_key, 'ap-south-1')
+
         s3 = get_resource(s3_iam_role, 's3')
         s3_bucket = get_bucket(s3, 'eapss3')
         MonthltDeptTotal = pd.read_excel('Datasets/cleaned_Monthly_Dept_Total.xlsx')
