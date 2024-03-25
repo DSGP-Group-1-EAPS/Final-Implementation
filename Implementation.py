@@ -55,7 +55,7 @@ def main():
 
         access_key = str(access_key)
         secret_key = str(secret_key)
-
+        #kavindu us gae
         # Add IAM Role Credentials to the session
         s3_iam_role = access_iam_role(access_key, secret_key, 'ap-south-1')
 
