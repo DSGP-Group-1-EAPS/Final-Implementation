@@ -54,7 +54,7 @@ def upload_file_to_s3(df, bucket_name, s3_key):
 
 def get_model(s3, bucket_name, key, model_buffer):
     try:
-        # Download pickled model from S3 into BytesIO buffer
+
         s3.download_fileobj(bucket_name, key, model_buffer)
         model_buffer.seek(0)
 
