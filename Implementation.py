@@ -163,9 +163,7 @@ def main():
         # employee_codes, departments, probabilities = get_high_prob_employee_info(rf_model, df_selected, predictions)
 
         filtered_df = predictions_df[(predictions_df['Majority_Vote'] == 'B') &
-                                     (predictions_df['Mean_Proba'] > 0.70) &
-                                     ((predictions_df['Department'] == 2) |
-                                      (predictions_df['Department'] == 0))]
+                                     (predictions_df['Mean_Proba'] > 0.70)]
 
         # Drop duplicate rows based on the 'Employee_Code' column to keep only unique employee codes
         filtered_df_unique = filtered_df.drop_duplicates(subset=['Employee Code'])
