@@ -5,7 +5,7 @@ import pandas as pd
 from RandomForestClassificationModel import rf_load_model, get_features, predict, get_high_prob_employee_info
 from SARIMA_Model import get_time_series_forecast, add_to_dataset, ts_load_model
 from flask import jsonify
-from S3Connection import access_iam_role, get_resource, get_bucket, get_model, download_dataset
+from S3Connection import get_s3_access, upload_file_to_s3, get_model, download_dataset, upload_model_to_s3
 from Preprocessing import feature_engineering, remove_features, get_last_month
 
 app = Flask(__name__, template_folder='Templates')
@@ -14,7 +14,9 @@ rf_selected_features = ['Encoded Code', 'Encoded Department', 'YearsWorked', 'Da
                         'LeaveMonth', 'LeaveYear', 'Encoded Reason', 'Encoded Status',
                         'Encoded Absenteeism Type', 'Encoded Shift', 'MonthlyDeptTotal']
 updated_df = pd.DataFrame()
-#final
+
+
+# final
 
 @app.route('/')
 def index():
@@ -56,41 +58,49 @@ def main():
         access_key = str(access_key)
         secret_key = str(secret_key)
 
-        # Add IAM Role Credentials to the session
-        s3_iam_role = access_iam_role(access_key, secret_key, 'ap-south-1')
+        # Creating a Boto3 client to connect to S3
+        s3 = get_s3_access(access_key, secret_key, 'ap-south-1')
 
-        s3 = get_resource(s3_iam_role, 's3')
-        s3_bucket = get_bucket(s3, 'eapss3')
-        MonthltDeptTotal = pd.read_excel('Datasets/cleaned_Monthly_Dept_Total.xlsx')
-        training_df = download_dataset('Datasets/Training Dataset/training_dataset_original.xlsx')
-        if get_last_month(training_df) != df['LeaveMonth'][0] - 1:
-            prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data.xlsx')
-            updated_training_df = remove_features(training_df)
-            combined_df = pd.concat([updated_training_df, prev_month_data, df])
-            print("Datasets combined")
-            preprocessed_retraining_df = feature_engineering(combined_df, MonthltDeptTotal)
-            preprocessed_retraining_df = preprocessed_retraining_df[preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
+        monthly_dept_total = pd.read_excel('Datasets/cleaned_Monthly_Dept_Total.xlsx')
 
-            ## ACTUAL DATA
-            prevs_month_actual = preprocessed_retraining_df[preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
-            prevs_month_predict = download_dataset('Datasets/Predictions/previous_month.xlsx')
-            prevs_month_actual_b = prevs_month_actual[prevs_month_actual['TargetCategory'] == 'B']
-            # GET B ----> EMP codes to array ---------> get the prev predictions from below(To array) ----> compare array
+        training_df_buffer = BytesIO()
+        training_df = download_dataset('Datasets/Training Dataset/training_dataset_original.xlsx', s3, 'eapss3', training_df_buffer)
+        print("Training dataset downloaded")
 
-            print(preprocessed_retraining_df.shape)
-            print("Dataset preprocessed and seperated")
-            X_retrain = preprocessed_retraining_df[rf_selected_features]
-            Y_retrain = preprocessed_retraining_df['TargetCategory']
+        prev_month_data_buffer = BytesIO()
+        prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data.xlsx', s3, 'eapss3', prev_month_data_buffer)
+        print("Previous month's data downloaded")
 
-        get_model('eapss3', 'Models/rf_model_original.pkl', 'Model/rf_model_original.pkl')
-        get_model('eapss3', 'Models/Catboost_model_original.pkl', 'Model/Catboost_model_original.pkl')
-        get_model('eapss3', 'Models/LightGBM_model_original.pkl', 'Model/LightGBM_model_original.pkl')
+        updated_training_df = remove_features(training_df)
+        combined_df = pd.concat([updated_training_df, prev_month_data, df])
+        print("Datasets combined")
 
-        rf_model = rf_load_model('Model/rf_model_original.pkl')
+        preprocessed_retraining_df = feature_engineering(combined_df, monthly_dept_total)
+        preprocessed_retraining_df = preprocessed_retraining_df[
+            preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
+
+        ## ACTUAL DATA
+        # prevs_month_actual = preprocessed_retraining_df[preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
+        # prevs_month_predict = download_dataset('Datasets/Predictions/previous_month.xlsx')
+        # prevs_month_actual_b = prevs_month_actual[prevs_month_actual['TargetCategory'] == 'B']
+        # GET B ----> EMP codes to array ---------> get the prev predictions from below(To array) ----> compare array
+
+        print(preprocessed_retraining_df.shape)
+        print("Dataset preprocessed and separated")
+
+        X_retrain = preprocessed_retraining_df[rf_selected_features]
+        Y_retrain = preprocessed_retraining_df['TargetCategory']
+
+        rf_model_buffer = BytesIO()
+        rf_model = get_model(s3, 'eapss3', 'Models/rf_model_original.pkl', rf_model_buffer)
         print("rf model loaded")
-        cb_model = rf_load_model('Model/Catboost_model_original.pkl')
+
+        cb_model_buffer = BytesIO()
+        cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_original.pkl', cb_model_buffer)
         print("cb model loaded")
-        lgbm_model = rf_load_model('Model/LightGBM_model_original.pkl')
+
+        lgbm_model_buffer = BytesIO()
+        lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_original.pkl', lgbm_model_buffer)
         print("lgbm model loaded")
 
         rf_model.fit(X_retrain, Y_retrain)
@@ -100,23 +110,24 @@ def main():
         lgbm_model.fit(X_retrain, Y_retrain)
         print("LGBM model retrained")
 
-        # Upload the user-provided file to S3
-        s3_bucket.upload_fileobj(BytesIO(file.read()), f"Datasets/{df['LeaveYear'][0]}_{df['LeaveMonth'][0]}_data.xlsx")
-        print("User-provided file uploaded to S3")
+        upload_file_to_s3(preprocessed_retraining_df, 'eapss3',
+                          'Datasets/Training Dataset/updated_training_dataset.xlsx')
+        print("Retraining dataset uploaded to S3")
 
-        # Upload the updated previous month's data to S3
-        # s3_bucket.upload_fileobj(BytesIO(file.read()),
-        #                          'Datasets/Training Dataset/prev_monthly_data.xlsx')
-        # print("Updated previous month's data uploaded to S3")
-        print("File uploaded to S3")
+        upload_file_to_s3(df, 'eapss3', 'Datasets/Training Dataset/prev_monthly_data.xlsx')
+        print("Updated previous month's data uploaded to S3")
 
-        get_model('eapss3', 'Models/Sewing_sarimax.pkl', 'Model/Sewing_sarimax.pkl')
-        get_model('eapss3', 'Models/Mat_sarimax.pkl', 'Model/Mat_sarimax.pkl')
-        get_model('eapss3', 'Models/Jumper_sarimax.pkl', 'Model/Jumper_sarimax.pkl')
+        sewing_model_buffer = BytesIO()
+        sewing_model = get_model(s3, 'eapss3', 'Models/Sewing_sarimax.pkl', sewing_model_buffer)
+        print("Sewing model loaded")
 
-        sewing_model = ts_load_model('Model/Sewing_sarimax.pkl')
-        mat_model = ts_load_model('Model/Mat_sarimax.pkl')
-        jumper_model = ts_load_model('Model/Jumper_sarimax.pkl')
+        mat_model_buffer = BytesIO()
+        mat_model = get_model(s3, 'eapss3', 'Models/Mat_sarimax.pkl', mat_model_buffer)
+        print("Mat model loaded")
+
+        jumper_model_buffer = BytesIO()
+        jumper_model = get_model(s3, 'eapss3', 'Models/Jumper_sarimax.pkl', jumper_model_buffer)
+        print("Jumper model loaded")
 
         sewing_forecast = get_time_series_forecast(sewing_model, 3)
         mat_forecast = get_time_series_forecast(mat_model, 3)
@@ -176,8 +187,16 @@ def main():
         filtered_df_unique = filtered_df.drop_duplicates(subset=['Employee Code'])
         print("Number of rows in filtered DataFrame:", filtered_df_unique.shape[0])
 
-        # Download the previous months predictions dataset
-        ###################################################
+        upload_model_to_s3(rf_model, 'eapss3', 'Models/rf_model_updated.pkl')
+        print("RF model uploaded to S3")
+
+        upload_model_to_s3(cb_model, 'eapss3', 'Models/Catboost_model_updated.pkl')
+        print("CatBoost model uploaded to S3")
+
+        upload_model_to_s3(lgbm_model, 'eapss3', 'Models/LightGBM_model_updated.pkl')
+        print("LGBM model uploaded to S3")
+
+        upload_file_to_s3(filtered_df_unique, 'eapss3', f"Datasets/Predictions/{df_selected['LeaveYear'][0]}-{df_selected['LeaveMonth'][0]}.xlsx")
 
         # Create a dictionary with the data
         data = {
