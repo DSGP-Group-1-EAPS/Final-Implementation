@@ -102,7 +102,7 @@ def main():
         lgbm_model_buffer = BytesIO()
         lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_original.pkl', lgbm_model_buffer)
         print("lgbm model loaded")
-
+        X_retrain.head()
         rf_model.fit(X_retrain, Y_retrain)
         print("RF model retrained")
         cb_model.fit(X_retrain, Y_retrain)
@@ -180,21 +180,20 @@ def main():
         predictions_df['Mean_Proba'] = mean_proba
         # employee_codes, departments, probabilities = get_high_prob_employee_info(rf_model, df_selected, predictions)
 
-        filtered_df = predictions_df[(predictions_df['Majority_Vote'] == 'B') &
-                                     (predictions_df['Mean_Proba'] > 0.70)]
+        filtered_df = predictions_df[(predictions_df['Majority_Vote'] == 'B')]
 
         # Drop duplicate rows based on the 'Employee_Code' column to keep only unique employee codes
         filtered_df_unique = filtered_df.drop_duplicates(subset=['Employee Code'])
         print("Number of rows in filtered DataFrame:", filtered_df_unique.shape[0])
 
-        upload_model_to_s3(rf_model, 'eapss3', 'Models/rf_model_updated.pkl')
-        print("RF model uploaded to S3")
-
-        upload_model_to_s3(cb_model, 'eapss3', 'Models/Catboost_model_updated.pkl')
-        print("CatBoost model uploaded to S3")
-
-        upload_model_to_s3(lgbm_model, 'eapss3', 'Models/LightGBM_model_updated.pkl')
-        print("LGBM model uploaded to S3")
+        # upload_model_to_s3(rf_model, 'eapss3', 'Models/rf_model_updated.pkl')
+        # print("RF model uploaded to S3")
+        #
+        # upload_model_to_s3(cb_model, 'eapss3', 'Models/Catboost_model_updated.pkl')
+        # print("CatBoost model uploaded to S3")
+        #
+        # upload_model_to_s3(lgbm_model, 'eapss3', 'Models/LightGBM_model_updated.pkl')
+        # print("LGBM model uploaded to S3")
 
         upload_file_to_s3(filtered_df_unique, 'eapss3', f"Datasets/Predictions/{df_selected['LeaveYear'][0]}-{df_selected['LeaveMonth'][0]}.xlsx")
 
