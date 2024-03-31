@@ -114,7 +114,7 @@ def main():
                           'Datasets/Training Dataset/updated_training_dataset.xlsx')
         print("Retraining dataset uploaded to S3")
 
-        upload_file_to_s3(df, 'eapss3', 'Datasets/Training Dataset/prev_monthly_data.xlsx')
+        upload_file_to_s3(df, 'eapss3', 'Datasets/Training Dataset/prev_monthly_data_updated.xlsx')
         print("Updated previous month's data uploaded to S3")
 
         sewing_model_buffer = BytesIO()
