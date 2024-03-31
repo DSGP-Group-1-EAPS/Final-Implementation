@@ -70,6 +70,11 @@ def main():
             print("Datasets combined")
             preprocessed_retraining_df = feature_engineering(combined_df, MonthltDeptTotal)
             preprocessed_retraining_df = preprocessed_retraining_df[preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
+
+            ## ACTUAL DATA
+            prevs_month_actual = preprocessed_retraining_df[preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
+            # GET B ----> EMP codes to array ---------> get the prev predictions from below(To array) ----> compare array
+
             print(preprocessed_retraining_df.shape)
             print("Dataset preprocessed and seperated")
             X_retrain = preprocessed_retraining_df[rf_selected_features]
@@ -168,6 +173,9 @@ def main():
         # Drop duplicate rows based on the 'Employee_Code' column to keep only unique employee codes
         filtered_df_unique = filtered_df.drop_duplicates(subset=['Employee Code'])
         print("Number of rows in filtered DataFrame:", filtered_df_unique.shape[0])
+
+        # Download the previous months predictions dataset
+        ###################################################
 
         # Create a dictionary with the data
         data = {
