@@ -73,6 +73,8 @@ def main():
 
             ## ACTUAL DATA
             prevs_month_actual = preprocessed_retraining_df[preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
+            prevs_month_predict = download_dataset('Datasets/Predictions/previous_month.xlsx')
+            prevs_month_actual_b = prevs_month_actual[prevs_month_actual['TargetCategory'] == 'B']
             # GET B ----> EMP codes to array ---------> get the prev predictions from below(To array) ----> compare array
 
             print(preprocessed_retraining_df.shape)
