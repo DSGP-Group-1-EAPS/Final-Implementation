@@ -81,9 +81,34 @@ def main():
 
         ## ACTUAL DATA
         # prevs_month_actual = preprocessed_retraining_df[preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
-        # prevs_month_predict = download_dataset('Datasets/Predictions/previous_month.xlsx')
         # prevs_month_actual_b = prevs_month_actual[prevs_month_actual['TargetCategory'] == 'B']
-        # GET B ----> EMP codes to array ---------> get the prev predictions from below(To array) ----> compare array
+        # prev_actual_emp_codes = prevs_month_actual_b['Encoded Code']
+
+        ## Previous data
+        # prev_leave_year = prevs_month_actual_b['LeaveYear'][0]
+        # prev_leave_month = prevs_month_actual_b['LeaveMonth'][0]
+        # prev_month_data_predict_buffer = BytesIO()
+        # prevs_month_predict = download_dataset(f'Datasets/Predictions/{prev_leave_year}-{prev_leave_month}.xlsx', s3, 'eapss3', prev_month_data_predict_buffer)
+        # prev_predict_emp_codes = prevs_month_predict['Encoded Code']
+
+        # # Extract employee codes from the previous actual data
+        # prev_actual_emp_codes = prevs_month_actual_b['Encoded Code'].tolist()
+        #
+        # # Extract employee codes from the previous predictions data
+        # prev_predict_emp_codes = prevs_month_predict['Encoded Code'].tolist()
+        #
+        # # Convert both lists to sets for efficient comparison
+        # prev_actual_emp_set = set(prev_actual_emp_codes)
+        # prev_predict_emp_set = set(prev_predict_emp_codes)
+        #
+        # # Find common employee codes between the two sets
+        # common_emp_codes = prev_actual_emp_set.intersection(prev_predict_emp_set)
+        #
+        # # Calculate accuracy
+        # accuracy = len(common_emp_codes) / len(prev_actual_emp_set) * 100
+        #
+        # # Print accuracy
+        # print("Accuracy:", accuracy)
 
         print(preprocessed_retraining_df.shape)
         print("Dataset preprocessed and separated")
