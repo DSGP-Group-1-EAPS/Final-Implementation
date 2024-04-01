@@ -101,22 +101,25 @@ def main():
         prev_leave_month = last_record['LeaveMonth']
         print(prev_leave_month)
 
-        #apply try catch to check if the file exists
         prev_month_data_predict_buffer = BytesIO()
-        prevs_month_predict = download_dataset(f'Datasets/Predictions/{prev_leave_year}-{prev_leave_month}.xlsx', s3, 'eapss3', prev_month_data_predict_buffer)
-        prev_predict_emp_codes = prevs_month_predict['Employee Code'].tolist()
-        print(prev_predict_emp_codes)
-        print(len(prev_predict_emp_codes))
-        count=0
-        for emp_code in prev_predict_emp_codes:
-            if emp_code in prev_actual_emp_codes:
-                count +=1
-                print(emp_code)
+        try:
+            prevs_month_predict = download_dataset(f'Datasets/Predictions/{prev_leave_year}-{prev_leave_month}.xlsx',
+                                                   s3, 'eapss3', prev_month_data_predict_buffer)
+            prev_predict_emp_codes = prevs_month_predict['Employee Code'].tolist()
+            print(prev_predict_emp_codes)
+            print(len(prev_predict_emp_codes))
+            count = 0
+            for emp_code in prev_predict_emp_codes:
+                if emp_code in prev_actual_emp_codes:
+                    count += 1
+                    print(emp_code)
 
-        print(count)
-        accuracy_model = count/len(prev_predict_emp_codes) * 100
-        print("Accuracy comparison:", accuracy_model)
+            print(count)
+            accuracy_model = count / len(prev_predict_emp_codes) * 100
+            print("Accuracy comparison:", accuracy_model)
 
+        except Exception as e:
+            print("An error occurred while retrieving prev_predict_emp_codes:", e)
 
         # # Convert both lists to sets for efficient comparison
         # prev_actual_emp_set = set(prev_actual_emp_codes)
@@ -130,7 +133,6 @@ def main():
         #
         # # Print accuracy
         # print("Accuracy comparison:", accuracy)
-
 
         print(preprocessed_retraining_df.shape)
         print("Dataset preprocessed and separated")
