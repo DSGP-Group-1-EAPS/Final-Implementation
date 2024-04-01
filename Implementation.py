@@ -186,14 +186,14 @@ def main():
         filtered_df_unique = filtered_df.drop_duplicates(subset=['Employee Code'])
         print("Number of rows in filtered DataFrame:", filtered_df_unique.shape[0])
 
-        # upload_model_to_s3(rf_model, 'eapss3', 'Models/rf_model_updated.pkl')
-        # print("RF model uploaded to S3")
-        #
-        # upload_model_to_s3(cb_model, 'eapss3', 'Models/Catboost_model_updated.pkl')
-        # print("CatBoost model uploaded to S3")
-        #
-        # upload_model_to_s3(lgbm_model, 'eapss3', 'Models/LightGBM_model_updated.pkl')
-        # print("LGBM model uploaded to S3")
+        upload_model_to_s3(rf_model, 'eapss3', 'Models/rf_model_updated.pkl')
+        print("RF model uploaded to S3")
+
+        upload_model_to_s3(cb_model, 'eapss3', 'Models/Catboost_model_updated.pkl')
+        print("CatBoost model uploaded to S3")
+
+        upload_model_to_s3(lgbm_model, 'eapss3', 'Models/LightGBM_model_updated.pkl')
+        print("LGBM model uploaded to S3")
 
         upload_file_to_s3(filtered_df_unique, 'eapss3', f"Datasets/Predictions/{df_selected['LeaveYear'][0]}-{df_selected['LeaveMonth'][0]}.xlsx")
 
