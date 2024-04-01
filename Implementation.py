@@ -64,12 +64,13 @@ def main():
         monthly_dept_total = pd.read_excel('Datasets/cleaned_Monthly_Dept_Total.xlsx')
 
         training_df_buffer = BytesIO()
-        training_df = download_dataset('Datasets/Training Dataset/training_dataset_original.xlsx', s3, 'eapss3', training_df_buffer)
-        print("Training dataset downloaded")
+        training_df = download_dataset('Datasets/Training Dataset/updated_training_dataset.xlsx', s3, 'eapss3', training_df_buffer)
+        print(training_df.shape)
 
         prev_month_data_buffer = BytesIO()
-        prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data.xlsx', s3, 'eapss3', prev_month_data_buffer)
+        prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data_updated.xlsx', s3, 'eapss3', prev_month_data_buffer)
         print("Previous month's data downloaded")
+        print(prev_month_data.shape)
 
         updated_training_df = remove_features(training_df)
         combined_df = pd.concat([updated_training_df, prev_month_data, df])
@@ -117,15 +118,15 @@ def main():
         Y_retrain = preprocessed_retraining_df['TargetCategory']
 
         rf_model_buffer = BytesIO()
-        rf_model = get_model(s3, 'eapss3', 'Models/rf_model_original.pkl', rf_model_buffer)
+        rf_model = get_model(s3, 'eapss3', 'Models/rf_model_updated.pkl', rf_model_buffer)
         print("rf model loaded")
 
         cb_model_buffer = BytesIO()
-        cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_original.pkl', cb_model_buffer)
+        cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_updated.pkl', cb_model_buffer)
         print("cb model loaded")
 
         lgbm_model_buffer = BytesIO()
-        lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_original.pkl', lgbm_model_buffer)
+        lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_updated.pkl', lgbm_model_buffer)
         print("lgbm model loaded")
         X_retrain.head()
         rf_model.fit(X_retrain, Y_retrain)
