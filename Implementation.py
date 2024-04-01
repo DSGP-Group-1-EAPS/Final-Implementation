@@ -81,9 +81,15 @@ def main():
             preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
 
         # ACTUAL DATA
-        prevs_month_actual = preprocessed_retraining_df[preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
+        prevs_month_actual = preprocessed_retraining_df[preprocessed_retraining_df['Date'] >= f'2023-{get_last_month(preprocessed_retraining_df)}-01']
+        prevs_month_actual.head()
+
         prevs_month_actual_b = prevs_month_actual[prevs_month_actual['TargetCategory'] == 'B']
-        prev_actual_emp_codes = prevs_month_actual_b['Encoded Code'].tolist()
+        prevs_month_actual_b.head()
+
+        prev_actual_emp_codes = prevs_month_actual_b['Encoded Code'].unique()
+        print(prev_actual_emp_codes)
+        print(len(prev_actual_emp_codes))
 
         # Previous data
         last_record = prevs_month_actual_b.iloc[-1]
@@ -94,10 +100,21 @@ def main():
         # prev_leave_month = prevs_month_actual_b['LeaveMonth'][-1]
         prev_leave_month = last_record['LeaveMonth']
         print(prev_leave_month)
+
         prev_month_data_predict_buffer = BytesIO()
         prevs_month_predict = download_dataset(f'Datasets/Predictions/{prev_leave_year}-{prev_leave_month}.xlsx', s3, 'eapss3', prev_month_data_predict_buffer)
-        prev_predict_emp_codes = prevs_month_predict['Encoded Code'].tolist()
+        prev_predict_emp_codes = prevs_month_predict['Employee Code'].tolist()
+        print(prev_predict_emp_codes)
+        print(len(prev_predict_emp_codes))
+        count=0
+        for emp_code in prev_predict_emp_codes:
+            if emp_code in prev_actual_emp_codes:
+                count +=1
+                print(emp_code)
 
+        print(count)
+        accuracy_model = count/len(prev_predict_emp_codes) * 100
+        print("Accuracy comparison:", accuracy_model)
         # Convert both lists to sets for efficient comparison
         prev_actual_emp_set = set(prev_actual_emp_codes)
         prev_predict_emp_set = set(prev_predict_emp_codes)
