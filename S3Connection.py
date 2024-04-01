@@ -80,3 +80,15 @@ def download_dataset(key, s3, bucket_name, dataset_buffer):
     except Exception as e:
         print(f"Error downloading DataFrame from S3: {e}")
         return None
+
+
+def access_iam_role():
+    return None
+
+
+def get_bucket():
+    return None
+
+
+def get_resource():
+    return None
