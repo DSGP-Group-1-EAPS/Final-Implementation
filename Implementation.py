@@ -64,11 +64,11 @@ def main():
         monthly_dept_total = pd.read_excel('Datasets/cleaned_Monthly_Dept_Total.xlsx')
 
         training_df_buffer = BytesIO()
-        training_df = download_dataset('Datasets/Training Dataset/updated_training_dataset.xlsx', s3, 'eapss3', training_df_buffer)
+        training_df = download_dataset('Datasets/Training Dataset/training_dataset_original.xlsx', s3, 'eapss3', training_df_buffer)
         print(training_df.shape)
 
         prev_month_data_buffer = BytesIO()
-        prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data_updated.xlsx', s3, 'eapss3', prev_month_data_buffer)
+        prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data.xlsx', s3, 'eapss3', prev_month_data_buffer)
         print("Previous month's data downloaded")
         print(prev_month_data.shape)
 
@@ -101,6 +101,7 @@ def main():
         prev_leave_month = last_record['LeaveMonth']
         print(prev_leave_month)
 
+        #apply try catch to check if the file exists
         prev_month_data_predict_buffer = BytesIO()
         prevs_month_predict = download_dataset(f'Datasets/Predictions/{prev_leave_year}-{prev_leave_month}.xlsx', s3, 'eapss3', prev_month_data_predict_buffer)
         prev_predict_emp_codes = prevs_month_predict['Employee Code'].tolist()
@@ -115,18 +116,21 @@ def main():
         print(count)
         accuracy_model = count/len(prev_predict_emp_codes) * 100
         print("Accuracy comparison:", accuracy_model)
-        # Convert both lists to sets for efficient comparison
-        prev_actual_emp_set = set(prev_actual_emp_codes)
-        prev_predict_emp_set = set(prev_predict_emp_codes)
 
-        # Find common employee codes between the two sets
-        common_emp_codes = prev_actual_emp_set.intersection(prev_predict_emp_set)
 
-        # Calculate accuracy
-        accuracy = len(common_emp_codes) / len(prev_actual_emp_set) * 100
+        # # Convert both lists to sets for efficient comparison
+        # prev_actual_emp_set = set(prev_actual_emp_codes)
+        # prev_predict_emp_set = set(prev_predict_emp_codes)
+        #
+        # # Find common employee codes between the two sets
+        # common_emp_codes = prev_actual_emp_set.intersection(prev_predict_emp_set)
+        #
+        # # Calculate accuracy
+        # accuracy = len(common_emp_codes) / len(prev_actual_emp_set) * 100
+        #
+        # # Print accuracy
+        # print("Accuracy comparison:", accuracy)
 
-        # Print accuracy
-        print("Accuracy comparison:", accuracy)
 
         print(preprocessed_retraining_df.shape)
         print("Dataset preprocessed and separated")
@@ -135,16 +139,17 @@ def main():
         Y_retrain = preprocessed_retraining_df['TargetCategory']
 
         rf_model_buffer = BytesIO()
-        rf_model = get_model(s3, 'eapss3', 'Models/rf_model_updated.pkl', rf_model_buffer)
+        rf_model = get_model(s3, 'eapss3', 'Models/rf_model_original.pkl', rf_model_buffer)
         print("rf model loaded")
 
         cb_model_buffer = BytesIO()
-        cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_updated.pkl', cb_model_buffer)
+        cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_original.pkl', cb_model_buffer)
         print("cb model loaded")
 
         lgbm_model_buffer = BytesIO()
-        lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_updated.pkl', lgbm_model_buffer)
+        lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_original.pkl', lgbm_model_buffer)
         print("lgbm model loaded")
+
         X_retrain.head()
         rf_model.fit(X_retrain, Y_retrain)
         print("RF model retrained")
@@ -223,7 +228,7 @@ def main():
         predictions_df['Mean_Proba'] = mean_proba
         # employee_codes, departments, probabilities = get_high_prob_employee_info(rf_model, df_selected, predictions)
 
-        filtered_df = predictions_df[(predictions_df['Majority_Vote'] == 'B')]
+        filtered_df = predictions_df[(predictions_df['Majority_Vote'] == 'B') & (predictions_df['Mean_Proba'] > 0.70)]
 
         # Drop duplicate rows based on the 'Employee_Code' column to keep only unique employee codes
         filtered_df_unique = filtered_df.drop_duplicates(subset=['Employee Code'])
