@@ -2,34 +2,26 @@ from io import BytesIO
 
 from flask import Flask, render_template, request
 import pandas as pd
+from flask_cors import CORS
+
 from RandomForestClassificationModel import rf_load_model, get_features, predict, get_high_prob_employee_info
 from SARIMA_Model import get_time_series_forecast, add_to_dataset, ts_load_model
 from flask import jsonify
 from S3Connection import get_s3_access, upload_file_to_s3, get_model, download_dataset, upload_model_to_s3
 from Preprocessing import feature_engineering, remove_features, get_last_month
 
-app = Flask(__name__, template_folder='Templates')
+app = Flask(__name__)
+CORS(app)
+
+data = None
 
 rf_selected_features = ['Encoded Code', 'Encoded Department', 'YearsWorked', 'DayOfWeek',
                         'LeaveMonth', 'LeaveYear', 'Encoded Reason', 'Encoded Status',
                         'Encoded Absenteeism Type', 'Encoded Shift', 'MonthlyDeptTotal']
-updated_df = pd.DataFrame()
 
-
-# final
-
-@app.route('/')
-def index():
-    return render_template('Main.html')
-
-
-@app.route('/EAPSPage', methods=['GET', 'POST'])
+@app.route('/', methods=['POST'])
 def main():
-    global updated_df, X_retrain, Y_retrain
-    if request.method == 'GET':
-        return render_template('EAPSPage.html')
-
-    if request.method == 'POST':
+        global data
         if 'file' not in request.files:
             return 'No file uploaded', 400
 
@@ -42,6 +34,8 @@ def main():
             df = pd.read_excel(file)
         except Exception as e:
             return f'Error reading Excel file: {e}', 400
+
+        print("File Uploaded")
 
         def read_aws_config(filename):
             aws_config = {}
@@ -248,16 +242,39 @@ def main():
         upload_file_to_s3(filtered_df_unique, 'eapss3', f"Datasets/Predictions/{df_selected['LeaveYear'][0]}-{df_selected['LeaveMonth'][0]}.xlsx")
 
 
+        print(data)
+
         # Create a dictionary with the data
+
         data = {
             'employee_codes': filtered_df_unique['Employee Code'].tolist(),
             'departments': filtered_df_unique['Department'].tolist(),
-            'mean probabilities': filtered_df_unique['Mean_Proba'].tolist(),
-            'majority votes': filtered_df_unique['Majority_Vote'].tolist()
+            'probabilities': filtered_df_unique['Mean_Proba'].tolist()
+            # 'majority votes': filtered_df_unique['Majority_Vote'].tolist()
         }
 
         # Return the data as JSON
-        return jsonify(data)
+        return "Done"
+
+
+@app.route('/data')
+def get_data():
+    # data ={'employee_codes': [2278, 393, 4102, 1965, 1820, 1276, 2818, 1602, 243, 2306, 2766, 3305, 320, 2474, 194, 4036,
+    #                     2423, 4032, 3895, 3890, 2365, 2830, 1072, 3308, 3984, 1316, 2976, 729, 4096, 2152, 1442, 3771],
+    #         'departments': [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2],
+    #         'probabilities': [0.8235946860541531, 0.7220389012594436, 0.8709247978728859, 0.8274388992349831,
+    #                         0.8284207062015673, 0.7537164492301901, 0.8890992019760476, 0.8429063033729193,
+    #                         0.8125052865108341, 0.7700538058252654, 0.7664137895119737, 0.8300954933374678,
+    #                         0.8025734534127148, 0.832772466572902, 0.8212819013423176, 0.913070840422756,
+    #                         0.8422674834454722, 0.913070840422756, 0.907251090059841, 0.9062814563662628,
+    #                         0.7254290202396856, 0.8499682022175709, 0.7185136268723893, 0.7694244345341166,
+    #                         0.7839375310055953, 0.7246816120865183, 0.7064476391168176, 0.7547719587083508,
+    #                         0.7292411673152369, 0.8494465552449885, 0.7995627327146254, 0.7737517607724013]
+    #        }
+             # 'majority votes': ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
+             #            'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B']
+
+    return jsonify(data)
 
 
 if __name__ == '__main__':
