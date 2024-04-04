@@ -32,7 +32,7 @@ function LoginPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (email === 'admin' && password === 'pass') {
-      navigate('/dashboard');
+      navigate('/home');
     } else {
       setErrorMessage('Incorrect email or password');
     }

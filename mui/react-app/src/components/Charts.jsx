@@ -1,13 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
 const Charts = ({ departmentCounts, probabilityCounts }) => {
+  const departmentChartRef = useRef(null);
+  const probabilityChartRef = useRef(null);
+  const departmentChartInstanceRef = useRef(null);
+  const probabilityChartInstanceRef = useRef(null);
+
   useEffect(() => {
     // Create pie chart when department counts change
     if (Object.keys(departmentCounts).length > 0) {
-      const canvas = document.getElementById('departmentPieChart');
+      const canvas = departmentChartRef.current;
       if (canvas) {
-        new Chart(canvas, {
+        if (departmentChartInstanceRef.current) {
+          departmentChartInstanceRef.current.destroy(); // Destroy existing chart if it exists
+        }
+        departmentChartInstanceRef.current = new Chart(canvas, {
           type: 'pie',
           data: {
             labels: Object.keys(departmentCounts),
@@ -18,7 +26,7 @@ const Charts = ({ departmentCounts, probabilityCounts }) => {
           },
           options: {
             responsive: true,
-            maintainAspectRatio: false, // Prevent the chart from maintaining aspect ratio
+            maintainAspectRatio: false,
             plugins: {
               legend: {
                 position: 'right',
@@ -41,9 +49,12 @@ const Charts = ({ departmentCounts, probabilityCounts }) => {
         probabilityData.push(probabilityCounts[i] || 0);
       }
 
-      const probabilityCanvas = document.getElementById('probabilityBarChart');
-      if (probabilityCanvas) {
-        new Chart(probabilityCanvas, {
+      const canvas = probabilityChartRef.current;
+      if (canvas) {
+        if (probabilityChartInstanceRef.current) {
+          probabilityChartInstanceRef.current.destroy(); // Destroy existing chart if it exists
+        }
+        probabilityChartInstanceRef.current = new Chart(canvas, {
           type: 'bar',
           data: {
             labels: probabilityLabels,
@@ -55,7 +66,7 @@ const Charts = ({ departmentCounts, probabilityCounts }) => {
           },
           options: {
             responsive: true,
-            maintainAspectRatio: false, // Prevent the chart from maintaining aspect ratio
+            maintainAspectRatio: false,
             scales: {
               y: {
                 beginAtZero: true,
@@ -69,12 +80,10 @@ const Charts = ({ departmentCounts, probabilityCounts }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <div style={{ width: '45%' }}>
-        <canvas id="departmentPieChart" width="400" height="400"></canvas>
+      <div style={{ width: '20%' }}>
+        <canvas ref={departmentChartRef} id="departmentPieChart" width="400" height="400"></canvas>
       </div>
-      <div style={{ width: '45%' }}>
-        <canvas id="probabilityBarChart" width="400" height="400"></canvas>
-      </div>
+
     </div>
   );
 };
