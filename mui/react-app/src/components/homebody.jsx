@@ -55,16 +55,17 @@ export default function HomeBody() {
         <h1 style={{ fontFamily: 'Arial', marginBottom: '20px' }}>Employees Absenteeism Prediction for the Next Month</h1>
       </Stack>
 
+
       <InputFileUpload inputRef={fileInputRef} />
 
       <center>
-      <Button variant="contained" sx={{ py: 2, px: 4, my: 2, mb: 10, fontWeight: 'bold' }} onClick={handleGetPredictions}>
-  Get Predictions
-</Button>
+{/*       <Button variant="contained" sx={{ py: 2, px: 4, my: 2, mb: 10, fontWeight: 'bold' }} onClick={handleGetPredictions}> */}
+{/*   Get Predictions */}
+{/* </Button> */}
 
       </center>
 
       <EmployeeTable jsonData={jsonData} /> {/* Integrate the EmployeeTable component */}
-    </>
+       </>
   );
 }

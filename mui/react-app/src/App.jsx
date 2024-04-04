@@ -30,15 +30,19 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './components/SignInSide';
 import HomeBody from './components/homebody'; // Import your Dashboard component
+import Predict from './components/predict';
+import './App.css';
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/dashboard" element={<HomeBody />} /> {/* Route to DashboardPage component */}
+        <Route path="/predict" element={<Predict />} /> {/* Route to DashboardPage component */}
         <Route path="/" element={<LoginPage />} /> {/* Route to LoginPage component */}
       </Routes>
     </Router>
+
   );
 }
 
