@@ -23,7 +23,7 @@ rf_selected_features = ['Encoded Code', 'Encoded Department', 'YearsWorked', 'Da
 
 @app.route('/', methods=['POST'])
 def main():
-    global data
+    global data, updated_df
     global server_status
     if 'file' not in request.files:
         return 'No file uploaded', 400
