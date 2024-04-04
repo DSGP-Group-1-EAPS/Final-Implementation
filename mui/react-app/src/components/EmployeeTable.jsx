@@ -58,7 +58,7 @@ const EmployeeTable = ({ jsonData }) => {
             labels: Object.keys(departmentCounts),
             datasets: [{
               data: Object.values(departmentCounts),
-              backgroundColor: ['#1877D2', '#000000', '#FFCE56'],
+              backgroundColor: ['#7E2553', '#FF004D', '#FFC436'],
             }],
           },
           options: {
@@ -95,7 +95,7 @@ const EmployeeTable = ({ jsonData }) => {
             datasets: [{
               label: 'Probability Counts',
               data: probabilityData,
-              backgroundColor: '#1877D2',
+              backgroundColor: '#FFC436',
             }],
           },
           options: {
@@ -128,7 +128,7 @@ const EmployeeTable = ({ jsonData }) => {
 
       </div>
       {jsonData && (
-        <TableContainer component={Paper} style={{ marginTop: '80px', marginBottom: '80px', marginLeft: '12%', marginRight: '0%', width: '80%', height: 'auto', border: '1px solid #ccc' }}>
+        <TableContainer component={Paper} style={{ marginTop: '250px', marginBottom: '80px', marginLeft: '12%', marginRight: '0%', width: '80%', height: 'auto', border: '1px solid #ccc' }}>
           <Table aria-label="simple table">
             <TableHead>
               <TableRow>

@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import InputFileUpload from './upload';
-import EmployeeTable from './EmployeeTable'; // Import the EmployeeTable component
+import EmployeeTable from './EmployeeTable';
+import Progress from './progress';// Import the EmployeeTable component
 
 export default function HomeBody() {
   const [jsonData, setJsonData] = useState(null);
@@ -54,14 +55,15 @@ export default function HomeBody() {
     // Set displayTable to true after 2 seconds
     const timeoutId = setTimeout(() => {
       setDisplayTable(true);
-    }, 100);
+    }, 250);
 
     return () => clearTimeout(timeoutId); // Cleanup the timeout
   }, []);
 
   return (
     <>
-      {displayTable && <EmployeeTable jsonData={jsonData} predictions={predictions} />} {/* Integrate the EmployeeTable component */}
+        <Progress />
+      <EmployeeTable jsonData={jsonData} predictions={predictions} /> {/* Integrate the EmployeeTable component */}
     </>
   );
 }

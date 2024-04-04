@@ -21,7 +21,7 @@ const Charts = ({ departmentCounts, probabilityCounts }) => {
             labels: Object.keys(departmentCounts),
             datasets: [{
               data: Object.values(departmentCounts),
-              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+              backgroundColor: ['#7E2553', '#FF004D', '#FAEF5D'],
             }],
           },
           options: {
@@ -52,22 +52,7 @@ const Charts = ({ departmentCounts, probabilityCounts }) => {
       const canvas = probabilityChartRef.current;
       if (canvas) {
         if (probabilityChartInstanceRef.current) {
-          probabilityChartInstanceRef.current.destroy(); // Destroy existing chart if it exists
-        }
-        probabilityChartInstanceRef.current = new Chart(canvas, {
-          type: 'bar',
-          data: {
-            labels: probabilityLabels,
-            datasets: [{
-              label: 'Probability Counts',
-              data: probabilityData,
-              backgroundColor: '#4CAF50',
-            }],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
+
               y: {
                 beginAtZero: true,
               },
