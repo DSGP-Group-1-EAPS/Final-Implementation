@@ -35,14 +35,6 @@ function Predict() {
 
   }, [navigate]);
 
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setLoading(false);
-    }, 5 * 60 * 1000); // 5 minutes timeout
-
-    return () => clearTimeout(timeoutId);
-  }, []);
-
   return (
     <>
       <center>

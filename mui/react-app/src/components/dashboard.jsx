@@ -4,11 +4,20 @@ import Button from '@mui/material/Button';
 import InputFileUpload from './upload';
 import EmployeeTable from './EmployeeTable';
 import Progress from './progress';// Import the EmployeeTable component
+import Piechart from './Piechart';
+import Barchart from './Barchart';// Import the EmployeeTable component
 
 export default function HomeBody() {
   const [jsonData, setJsonData] = useState(null);
   const [predictions, setPredictions] = useState(null); // State for predictions
-  const [displayTable, setDisplayTable] = useState(false); // State to control table display
+  const [displayComponents, setDisplayComponents] = useState({
+    table1: false,
+    table2: false,
+    progress: false,
+    piechart: false,
+    barchart: false
+  }); // State to control component display
+
   const fileInputRef = useRef(null);
 
   const handleGetPredictions = async () => {
@@ -49,21 +58,47 @@ export default function HomeBody() {
   useEffect(() => {
     // Call handleGetPredictions when the component mounts
     handleGetPredictions();
-  }, []); // Empty dependency array to ensure this runs only once
 
-  useEffect(() => {
-    // Set displayTable to true after 2 seconds
-    const timeoutId = setTimeout(() => {
-      setDisplayTable(true);
-    }, 250);
+    // Set displayComponents progressively with timeouts
+    const timeouts = [
+      setTimeout(() => {
+        setDisplayComponents(prevState => ({ ...prevState, progress: true }));
+      }, 100),
+      setTimeout(() => {
+        setDisplayComponents(prevState => ({ ...prevState, table1: true }));
+      }, 200),
+      setTimeout(() => {
+        setDisplayComponents(prevState => ({ ...prevState, table2: true }));
+      }, 300),
+      setTimeout(() => {
+        setDisplayComponents(prevState => ({ ...prevState, piechart: true }));
+      }, 400),
+      setTimeout(() => {
+        setDisplayComponents(prevState => ({ ...prevState, barchart: true }));
+      }, 500)
+    ];
 
-    return () => clearTimeout(timeoutId); // Cleanup the timeout
+    return () => {
+      // Clear all timeouts to avoid memory leaks
+      timeouts.forEach(timeoutId => clearTimeout(timeoutId));
+    };
   }, []);
 
   return (
-    <>
-        <Progress />
-      <EmployeeTable jsonData={jsonData} predictions={predictions} /> {/* Integrate the EmployeeTable component */}
-    </>
+    <center>
+      <table style={{ width:'100%' }}>
+        <tr>
+          <td><center>{displayComponents.progress && <Progress />}</center></td>
+          <td><center>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</center></td>
+          <td><center>{displayComponents.barchart && <Barchart jsonData={jsonData} predictions={predictions} />}</center></td>
+        </tr>
+        <tr>
+        <td></td>
+        </tr>
+      </table>
+      <div style={{ width:'70%', marginTop: '50px', marginBottom: '50px' }}>
+      {displayComponents.table1 && <EmployeeTable jsonData={jsonData} predictions={predictions} />}
+      </div>
+    </center>
   );
 }

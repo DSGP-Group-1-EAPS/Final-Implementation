@@ -62,7 +62,7 @@ export default function Progress() {
   return (
     <div>
       <CircularProgressWithLabel value={progress} />
-      <h1 style={{ fontFamily: 'Arial',textAlign: 'center', paddingLeft: "0%", paddingRight:"57%", paddingBottom:"20%", paddingTop:"3%"}}>Last month <br/>prediction accuracy</h1>
+      <h1 style={{ fontFamily: 'Arial',textAlign: 'center'}}>Last month <br/>prediction accuracy</h1>
     </div>
   );
 }
