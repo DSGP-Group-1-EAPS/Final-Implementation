@@ -65,7 +65,7 @@ export default function HomeBody() {
 
       </center>
 
-      <EmployeeTable jsonData={jsonData} /> {/* Integrate the EmployeeTable component */}
+
        </>
   );
 }
