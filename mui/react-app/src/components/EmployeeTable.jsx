@@ -3,7 +3,9 @@ import MUIDataTable from "mui-datatables";
 import Paper from '@mui/material/Paper';
 import { Box } from '@mui/system';
 
+
 const EmployeeTable = ({ jsonData }) => {
+
   const columns = [
     {
       name: "employeeCode",

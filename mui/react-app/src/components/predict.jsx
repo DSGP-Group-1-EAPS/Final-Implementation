@@ -1,68 +1,75 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import GridLoader from "react-spinners/GridLoader";
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
-const override = {
-  justifyContent: "center",
-  alignItems: "center",
-  padding: "5% 0% 10% 0%",
-};
-
-function Predict() {
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:8080/status");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.text(); // Get response as text
-        console.log(data); // Log the received data
-        if (data === "Done") { // Check for string "true"
-          navigate("/dashboard");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    const intervalId = setInterval(fetchData, 5000); // Fetch data every 5 seconds
-
-    return () => clearInterval(intervalId); // Cleanup the interval
-
-  }, [navigate]);
-
+function CircularProgressWithLabel(props) {
   return (
-    <>
-      <center>
-        <h1
-          style={{
-            color: "#ffffff",
-            fontWeight: "bold",
-            fontFamily: "Arial",
-            fontSize: "55px",
-            marginTop: "5%",
-          }}
-        >
-          Retraining Model
-        </h1>
-
-        <div className="GridLoaderContainer" style={override}>
-          <GridLoader
-            color={"#FFC436"}
-            loading={loading}
-            cssOverride={override}
-            size={60}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        </div>
-      </center>
-    </>
+    <Box sx={{ position: 'relative', display: 'inline-flex', paddingLeft:'10%', paddingTop:'8%' }}>
+      <CircularProgress color="secondary" variant="determinate" size={350} thickness={8} {...props}  /> {/* Adjusted size to 120 */}
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'grey.500',
+          paddingLeft:'32%',
+          paddingTop:"30%"
+        }}
+      >
+        <Typography variant="caption" component="div" color="text.secondary">
+          {`${Math.round(props.value)}%`}
+        </Typography>
+        {props.value >= 50 && (
+          <Typography
+            variant="body1"
+            component="div"
+            color="white"
+            sx={{ position: 'absolute', zIndex: 1, fontSize:"75px", marginTop:"5%",marginBottom:"20%", marginRight:"30%", marginLeft:"13%"}}
+          >
+            85%
+          </Typography>
+        )}
+      </Box>
+    </Box>
   );
 }
 
-export default Predict;
+CircularProgressWithLabel.propTypes = {
+  value: PropTypes.number.isRequired,
+};
+
+export default function Progress({ jsonData }) {
+  const [progress, setProgress] = React.useState(0);
+  const [lmpa, setLmpa] = React.useState(null); // State to store lmpa value
+
+  React.useEffect(() => {
+    if (jsonData && jsonData.lmpa) {
+      setLmpa(jsonData.lmpa);
+    }
+  }, [jsonData]);
+
+  const targetProgress = lmpa || 85; // Use lmpa if available, otherwise default to 85
+
+  React.useEffect(() => {
+    if (progress < targetProgress) {
+      const timer = setInterval(() => {
+        setProgress((prevProgress) => prevProgress + 1);
+      }, 10);
+      return () => clearInterval(timer);
+    }
+  }, [progress, targetProgress]);
+
+  return (
+    <div>
+      <CircularProgressWithLabel value={progress} />
+      <h1 style={{ fontFamily: 'Arial',textAlign: 'center'}}>Last month <br/>prediction accuracy</h1>
+    </div>
+  );
+}

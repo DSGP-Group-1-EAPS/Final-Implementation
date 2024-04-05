@@ -116,7 +116,7 @@ const Piechart = ({ jsonData }) => {
   return (
 <>
         {Object.keys(departmentCounts).length > 0 && (
-          <div style={{ width: '65%' }}>
+          <div style={{ width: '85%' }}>
             <canvas id="departmentPieChart" width="400" height="400"></canvas>
           </div>
         )}

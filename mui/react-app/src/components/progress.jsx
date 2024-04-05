@@ -4,6 +4,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+
 function CircularProgressWithLabel(props) {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex', paddingLeft:'10%', paddingTop:'8%' }}>
@@ -31,7 +32,7 @@ function CircularProgressWithLabel(props) {
             variant="body1"
             component="div"
             color="white"
-            sx={{ position: 'absolute', zIndex: 1, fontSize:"75px" }}
+            sx={{ position: 'absolute', zIndex: 1, fontSize:"75px", marginTop:"5%",marginBottom:"20%", marginRight:"30%", marginLeft:"13%"}}
           >
             85%
           </Typography>
