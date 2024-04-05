@@ -25,6 +25,22 @@ rf_selected_features = ['Encoded Code', 'Encoded Department', 'YearsWorked', 'Da
 def main():
     global data, updated_df
     global server_status
+
+    months = {
+        1: 'January',
+        2: 'February',
+        3: 'March',
+        4: 'April',
+        5: 'May',
+        6: 'June',
+        7: 'July',
+        8: 'August',
+        9: 'September',
+        10: 'October',
+        11: 'November',
+        12: 'December'
+    }
+
     if 'file' not in request.files:
         return 'No file uploaded', 400
 
@@ -39,6 +55,18 @@ def main():
         return f'Error reading Excel file: {e}', 400
 
     print("File Uploaded")
+
+    predicted_month_name = months[df['LeaveMonth'][0]+1]
+    month_name = months[df['LeaveMonth'][0]]
+
+    year = df['LeaveYear'][0]
+    month = df['LeaveMonth'][0]
+
+    if month == 12:
+        predicted_next_year = year + 1
+    else:
+        predicted_next_year = year
+
 
     def read_aws_config(filename):
         aws_config = {}
@@ -61,12 +89,12 @@ def main():
     monthly_dept_total = pd.read_excel('Datasets/cleaned_Monthly_Dept_Total.xlsx')
 
     training_df_buffer = BytesIO()
-    training_df = download_dataset('Datasets/Training Dataset/training_dataset_original.xlsx', s3, 'eapss3',
+    training_df = download_dataset('Datasets/Training Dataset/updated_training_dataset.xlsx', s3, 'eapss3',
                                    training_df_buffer)
     print(training_df.shape)
 
     prev_month_data_buffer = BytesIO()
-    prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data.xlsx', s3, 'eapss3',
+    prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data_updated.xlsx', s3, 'eapss3',
                                        prev_month_data_buffer)
     print("Previous month's data downloaded")
     print(prev_month_data.shape)
@@ -141,15 +169,15 @@ def main():
     Y_retrain = preprocessed_retraining_df['TargetCategory']
 
     rf_model_buffer = BytesIO()
-    rf_model = get_model(s3, 'eapss3', 'Models/rf_model_original.pkl', rf_model_buffer)
+    rf_model = get_model(s3, 'eapss3', 'Models/rf_model_updated.pkl', rf_model_buffer)
     print("rf model loaded")
 
     cb_model_buffer = BytesIO()
-    cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_original.pkl', cb_model_buffer)
+    cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_updated.pkl', cb_model_buffer)
     print("cb model loaded")
 
     lgbm_model_buffer = BytesIO()
-    lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_original.pkl', lgbm_model_buffer)
+    lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_updated.pkl', lgbm_model_buffer)
     print("lgbm model loaded")
 
     X_retrain.head()
@@ -250,6 +278,8 @@ def main():
 
     # Create a dictionary with the data
     data = {
+        'month name': (month_name, predicted_next_year),
+        'predicted month name': (predicted_month_name,predicted_next_year),
         'employee_codes': filtered_df_unique['Employee Code'].tolist(),
         'departments': filtered_df_unique['Department'].tolist(),
         'probabilities': filtered_df_unique['Mean_Proba'].tolist()
@@ -265,11 +295,11 @@ def main():
 
 @app.route('/data')
 def get_data():
-    # data = {
-    #         'employee_codes': [2278, 393, 4102, 1965, 1820, 1276, 2818, 1602, 243, 2306, 2766, 3305, 320, 2474, 194, 4036, 2423, 4032, 3895, 3890, 2365, 2830, 1072, 3308, 3984, 1316, 2976, 729, 4096, 2152, 1442, 3771],
-    #         'departments': [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2],
-    #         'probabilities': [0.8235946860541531, 0.7220389012594436, 0.8709247978728859, 0.8274388992349831, 0.8284207062015673, 0.7537164492301901, 0.8890992019760476, 0.8429063033729193, 0.8125052865108341, 0.7700538058252654, 0.7664137895119737, 0.8300954933374678, 0.8025734534127148, 0.832772466572902, 0.8212819013423176, 0.913070840422756, 0.8422674834454722, 0.913070840422756, 0.907251090059841, 0.9062814563662628, 0.7254290202396856, 0.8499682022175709, 0.7185136268723893, 0.7694244345341166, 0.7839375310055953, 0.7246816120865183, 0.7064476391168176, 0.7547719587083508, 0.7292411673152369, 0.8494465552449885, 0.7995627327146254, 0.7737517607724013]
-    #         }
+    data = {
+            'employee_codes': [2278, 393, 4102, 1965, 1820, 1276, 2818, 1602, 243, 2306, 2766, 3305, 320, 2474, 194, 4036, 2423, 4032, 3895, 3890, 2365, 2830, 1072, 3308, 3984, 1316, 2976, 729, 4096, 2152, 1442, 3771],
+            'departments': [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2],
+            'probabilities': [0.8235946860541531, 0.7220389012594436, 0.8709247978728859, 0.8274388992349831, 0.8284207062015673, 0.7537164492301901, 0.8890992019760476, 0.8429063033729193, 0.8125052865108341, 0.7700538058252654, 0.7664137895119737, 0.8300954933374678, 0.8025734534127148, 0.832772466572902, 0.8212819013423176, 0.913070840422756, 0.8422674834454722, 0.913070840422756, 0.907251090059841, 0.9062814563662628, 0.7254290202396856, 0.8499682022175709, 0.7185136268723893, 0.7694244345341166, 0.7839375310055953, 0.7246816120865183, 0.7064476391168176, 0.7547719587083508, 0.7292411673152369, 0.8494465552449885, 0.7995627327146254, 0.7737517607724013]
+            }
 
     return jsonify(data)
 
