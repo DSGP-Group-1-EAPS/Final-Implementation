@@ -176,7 +176,6 @@ def main():
 
     server_status = "Retraining models"
 
-
     rf_model.fit(X_retrain, Y_retrain)
     cb_model.fit(X_retrain, Y_retrain)
     lgbm_model.fit(X_retrain, Y_retrain)
