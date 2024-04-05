@@ -88,7 +88,7 @@ export default function HomeBody() {
     <center>
       <table style={{ width:'100%' }}>
         <tr>
-          <td><center>{displayComponents.progress && <Progress />}</center></td>
+          <td><center>{displayComponents.progress && <Progress jsonData={jsonData}/>}</center></td>
           <td><center>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</center></td>
           <td><center>{displayComponents.barchart && <Barchart jsonData={jsonData} predictions={predictions} />}</center></td>
         </tr>
