@@ -278,7 +278,7 @@ def main():
 
     # Create a dictionary with the data
     data = {
-        'lmpa': accuracy_model,
+        'lmpa': [accuracy_model],
         'month name': (month_name, predicted_next_year),
         'predicted month name': (predicted_month_name, predicted_next_year),
         'employee_codes': filtered_df_unique['Employee Code'].tolist(),
