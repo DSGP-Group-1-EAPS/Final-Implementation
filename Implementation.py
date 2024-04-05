@@ -98,11 +98,11 @@ def main():
                                           monthly_dept_total_buffer)
 
     training_df_buffer = BytesIO()
-    training_df = download_dataset('Datasets/Training Dataset/training_dataset_original.xlsx', s3, 'eapss3',
+    training_df = download_dataset('Datasets/Training Dataset/updated_training_dataset.xlsx', s3, 'eapss3',
                                    training_df_buffer)
 
     prev_month_data_buffer = BytesIO()
-    prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data.xlsx', s3, 'eapss3',
+    prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data_updated.xlsx', s3, 'eapss3',
                                        prev_month_data_buffer)
 
     updated_training_df = remove_features(training_df)
@@ -165,13 +165,13 @@ def main():
     server_status = "Loading models"
 
     rf_model_buffer = BytesIO()
-    rf_model = get_model(s3, 'eapss3', 'Models/rf_model_original.pkl', rf_model_buffer)
+    rf_model = get_model(s3, 'eapss3', 'Models/rf_model_updated.pkl', rf_model_buffer)
 
     cb_model_buffer = BytesIO()
-    cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_original.pkl', cb_model_buffer)
+    cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_updated.pkl', cb_model_buffer)
 
     lgbm_model_buffer = BytesIO()
-    lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_original.pkl', lgbm_model_buffer)
+    lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_updated.pkl', lgbm_model_buffer)
     X_retrain.head()
 
     server_status = "Retraining models"
@@ -296,8 +296,9 @@ def main():
 
 @app.route('/data')
 def get_data():
+    accuracy = 0
     data = {
-        'lmpa': [69],
+        'lmpa': [accuracy],
         'employee_codes': [2278, 393, 4102, 1965, 1820, 1276, 2818, 1602, 243, 2306, 2766, 3305, 320, 2474, 194, 4036,
                            2423, 4032, 3895, 3890, 2365, 2830, 1072, 3308, 3984, 1316, 2976, 729, 4096, 2152, 1442,
                            3771],
