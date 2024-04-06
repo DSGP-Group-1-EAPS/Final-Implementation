@@ -4,6 +4,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
+
+
 function CircularProgressWithLabel({ value, targetProgress }) {
   return (
     <Box sx={{ position: 'relative', display: 'inline-flex', paddingLeft: '10%', paddingTop: '8%' }}>
@@ -31,7 +33,7 @@ function CircularProgressWithLabel({ value, targetProgress }) {
             variant="body1"
             component="div"
             color="white"
-            sx={{ position: 'absolute', zIndex: 1, fontSize: "75px", marginTop: "5%", marginBottom: "20%", marginRight: "30%", marginLeft: "13%" }}
+            sx={{ position: 'absolute', zIndex: 1, fontSize: "75px", marginTop: "5%", marginBottom: "20%", marginRight: "30%", marginLeft: "13%", fontColor:"#101418"}}
           >
             {`${targetProgress}%`}
           </Typography>
@@ -68,9 +70,10 @@ export default function Progress({ jsonData }) {
   }, [progress, targetProgress]);
 
   return (
-    <div>
+    <div style={{    backgroundColor: '#fff', color: '#101418', border: '1px solid #101418'}}>
       <CircularProgressWithLabel value={progress} targetProgress={targetProgress} />
       <h1 style={{ fontFamily: 'Arial', textAlign: 'center' }}>Last month <br />prediction accuracy</h1>
+
     </div>
   );
 }

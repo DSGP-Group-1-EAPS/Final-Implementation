@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GridLoader from "react-spinners/GridLoader";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const override = {
   justifyContent: "center",
@@ -67,6 +68,7 @@ function Predict() {
             />
           </div>
         )}
+
       </center>
     </>
   );

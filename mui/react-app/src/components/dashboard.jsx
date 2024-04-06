@@ -5,7 +5,8 @@ import InputFileUpload from './upload';
 import EmployeeTable from './EmployeeTable';
 import Progress from './progress';// Import the EmployeeTable component
 import Piechart from './Piechart';
-import Barchart from './Barchart';// Import the EmployeeTable component
+import Barchart from './Barchart';
+import CounterComponent from './counter';// Import the EmployeeTable component
 
 export default function HomeBody() {
   const [jsonData, setJsonData] = useState(null);
@@ -84,8 +85,18 @@ export default function HomeBody() {
     };
   }, []);
 
+
+
   return (
     <center>
+    <table style={{ width:'100%' }}>
+    <tr>
+    <td style={{ paddingLeft:'5%', paddingRight:'5%' }}><CounterComponent data={jsonData} total={200} department={1} label={"Total absenteeism prediction for MAT Team"} /> </td>
+    <td style={{ paddingLeft:'5%', paddingRight:'5%' }}><CounterComponent data={jsonData} total={200} department={0} label={"Total absenteeism prediction for Jumper Team"} /> </td>
+    <td style={{ paddingLeft:'5%', paddingRight:'5%' }}><CounterComponent data={jsonData} total={200} department={2} label={"Total absenteeism prediction for Sewing Team"} /> </td>
+    </tr>
+    </table>
+
       <table style={{ width:'100%' }}>
         <tr>
           <td><center>{displayComponents.progress && <Progress jsonData={jsonData}/>}</center></td>
