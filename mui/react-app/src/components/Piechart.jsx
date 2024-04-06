@@ -123,7 +123,7 @@ const Piechart = ({ jsonData }) => {
           </div>
         )}</center>
       <Typography variant="body1" style={{marginTop: '5%', color: '#939aa9', textAlign : 'center', marginBottom:"5%"}}>
-        <b>Last month prediction accuracy</b>
+        <b>Next month absenteeism prediction classification </b>
       </Typography>
         </div>
 </>

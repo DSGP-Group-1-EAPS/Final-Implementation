@@ -102,7 +102,7 @@ const Barchart = ({ jsonData }) => {
         <br />
         <center>
       <Typography variant="body1" style={{color: '#939aa9', textAlign : 'center'}}>
-        <b>Last month prediction accuracy</b>
+        <b>Next month absenteeism probability classfication </b>
       </Typography> </center>
       </div>
 
