@@ -98,24 +98,25 @@ def main():
                                           monthly_dept_total_buffer)
 
     training_df_buffer = BytesIO()
-    training_df = download_dataset('Datasets/Training Dataset/training_dataset_original.xlsx', s3, 'eapss3',
+    training_df = download_dataset('Datasets/Training Dataset/updated_training_dataset.xlsx', s3, 'eapss3',
                                    training_df_buffer)
 
     prev_month_data_buffer = BytesIO()
-    prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data.xlsx', s3, 'eapss3',
+    prev_month_data = download_dataset('Datasets/Training Dataset/prev_monthly_data_updated.xlsx', s3, 'eapss3',
                                        prev_month_data_buffer)
 
     updated_training_df = remove_features(training_df)
     combined_df = pd.concat([updated_training_df, prev_month_data, df])
 
     preprocessed_retraining_df = feature_engineering(combined_df, monthly_dept_total)
+    print(get_last_month(preprocessed_retraining_df))
     preprocessed_retraining_df = preprocessed_retraining_df[
         preprocessed_retraining_df['Date'] < f'2023-{get_last_month(preprocessed_retraining_df)}-01']
 
     # ACTUAL DATA
+    print(get_last_month(preprocessed_retraining_df))
     prevs_month_actual = preprocessed_retraining_df[
         preprocessed_retraining_df['Date'] >= f'2023-{get_last_month(preprocessed_retraining_df)}-01']
-    prevs_month_actual.head()
 
     prevs_month_actual_b = prevs_month_actual[prevs_month_actual['TargetCategory'] == 'B']
     prevs_month_actual_b.head()
@@ -150,7 +151,7 @@ def main():
 
         print(count)
         accuracy_model = count / len(prev_predict_emp_codes) * 100
-        accuracy_model = round(accuracy_model, 2)
+        accuracy_model = round(accuracy_model)
         print("Accuracy comparison:", accuracy_model)
 
     except Exception as e:
@@ -165,13 +166,13 @@ def main():
     server_status = "Loading models"
 
     rf_model_buffer = BytesIO()
-    rf_model = get_model(s3, 'eapss3', 'Models/rf_model_original.pkl', rf_model_buffer)
+    rf_model = get_model(s3, 'eapss3', 'Models/rf_model_updated.pkl', rf_model_buffer)
 
     cb_model_buffer = BytesIO()
-    cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_original.pkl', cb_model_buffer)
+    cb_model = get_model(s3, 'eapss3', 'Models/Catboost_model_updated.pkl', cb_model_buffer)
 
     lgbm_model_buffer = BytesIO()
-    lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_original.pkl', lgbm_model_buffer)
+    lgbm_model = get_model(s3, 'eapss3', 'Models/LightGBM_model_updated.pkl', lgbm_model_buffer)
     X_retrain.head()
 
     server_status = "Retraining models"
@@ -278,15 +279,14 @@ def main():
     # Create a dictionary with the data
     data = {
         'lmpa': [accuracy_model],
-        'month name': (month_name, predicted_next_year),
-        'predicted month name': (predicted_month_name, predicted_next_year),
+        # 'month name': (month_name, predicted_next_year),
+        # 'predicted month name': (predicted_month_name, predicted_next_year),
         'employee_codes': filtered_df_unique['Employee Code'].tolist(),
         'departments': filtered_df_unique['Department'].tolist(),
         'probabilities': filtered_df_unique['Mean_Proba'].tolist()
         # 'majority votes': filtered_df_unique['Majority_Vote'].tolist()
     }
 
-    print(data)
     server_status = "Done"
 
     # Return the data as JSON
@@ -295,22 +295,24 @@ def main():
 
 @app.route('/data')
 def get_data():
-    accuracy = 0
-    data = {
-        'lmpa': [accuracy],
-        'employee_codes': [2278, 393, 4102, 1965, 1820, 1276, 2818, 1602, 243, 2306, 2766, 3305, 320, 2474, 194, 4036,
-                           2423, 4032, 3895, 3890, 2365, 2830, 1072, 3308, 3984, 1316, 2976, 729, 4096, 2152, 1442,
-                           3771],
-        'departments': [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2],
-        'probabilities': [0.8235946860541531, 0.7220389012594436, 0.8709247978728859, 0.8274388992349831,
-                          0.8284207062015673, 0.7537164492301901, 0.8890992019760476, 0.8429063033729193,
-                          0.8125052865108341, 0.7700538058252654, 0.7664137895119737, 0.8300954933374678,
-                          0.8025734534127148, 0.832772466572902, 0.8212819013423176, 0.913070840422756,
-                          0.8422674834454722, 0.913070840422756, 0.907251090059841, 0.9062814563662628,
-                          0.7254290202396856, 0.8499682022175709, 0.7185136268723893, 0.7694244345341166,
-                          0.7839375310055953, 0.7246816120865183, 0.7064476391168176, 0.7547719587083508,
-                          0.7292411673152369, 0.8494465552449885, 0.7995627327146254, 0.7737517607724013]
-    }
+    global data
+    print(data)
+    # accuracy = 88
+    # data = {
+    #     'lmpa': [accuracy],
+    #     'employee_codes': [2278, 393, 4102, 1965, 1820, 1276, 2818, 1602, 243, 2306, 2766, 3305, 320, 2474, 194, 4036,
+    #                        2423, 4032, 3895, 3890, 2365, 2830, 1072, 3308, 3984, 1316, 2976, 729, 4096, 2152, 1442,
+    #                        3771],
+    #     'departments': [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2],
+    #     'probabilities': [0.8235946860541531, 0.7220389012594436, 0.8709247978728859, 0.8274388992349831,
+    #                       0.8284207062015673, 0.7537164492301901, 0.8890992019760476, 0.8429063033729193,
+    #                       0.8125052865108341, 0.7700538058252654, 0.7664137895119737, 0.8300954933374678,
+    #                       0.8025734534127148, 0.832772466572902, 0.8212819013423176, 0.913070840422756,
+    #                       0.8422674834454722, 0.913070840422756, 0.907251090059841, 0.9062814563662628,
+    #                       0.7254290202396856, 0.8499682022175709, 0.7185136268723893, 0.7694244345341166,
+    #                       0.7839375310055953, 0.7246816120865183, 0.7064476391168176, 0.7547719587083508,
+    #                       0.7292411673152369, 0.8494465552449885, 0.7995627327146254, 0.7737517607724013]
+    # }
 
     return jsonify(data)
 
