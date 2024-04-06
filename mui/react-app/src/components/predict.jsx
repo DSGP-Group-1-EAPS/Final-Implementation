@@ -9,7 +9,9 @@ const override = {
 };
 
 function Predict() {
+  const [animation,setAnimation] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [data, setData] = useState("Connecting to S3");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,13 +21,16 @@ function Predict() {
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
-        const data = await response.text(); // Get response as text
-        console.log(data); // Log the received data
-        if (data === "Done") { // Check for string "true"
+        const responseData = await response.text(); // Get response as text
+        console.log(responseData); // Log the received data
+        setData(responseData); // Set received data to state
+        if (responseData === "Done") { // Check for string "Done"
           navigate("/dashboard");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after receiving data
       }
     };
 
@@ -44,22 +49,24 @@ function Predict() {
             fontWeight: "bold",
             fontFamily: "Arial",
             fontSize: "55px",
-            marginTop: "5%",
+            marginTop: '10%'
           }}
         >
-          Retraining Model
+          {data} {/* Render the received data */}
         </h1>
 
-        <div className="GridLoaderContainer" style={override}>
-          <GridLoader
-            color={"#FFC436"}
-            loading={loading}
-            cssOverride={override}
-            size={60}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-        </div>
+        {animation && ( // Conditionally render GridLoader only when loading is true
+          <div className="GridLoaderContainer" style={override}>
+            <GridLoader
+              color={"#FFC436"}
+              loading={animation}
+              cssOverride={override}
+              size={60}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        )}
       </center>
     </>
   );
