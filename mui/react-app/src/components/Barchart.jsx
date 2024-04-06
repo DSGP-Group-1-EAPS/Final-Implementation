@@ -7,6 +7,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
 
 const Barchart = ({ jsonData }) => {
   const [departmentCounts, setDepartmentCounts] = useState({});
@@ -90,16 +91,21 @@ const Barchart = ({ jsonData }) => {
   }, [departmentCounts, probabilityCounts]);
 
   return (
-    <div style={{ marginTop: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+    <div style={{ marginTop: '20px', backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', borderRadius: '20px', width:'auto', paddingTop:"5%",marginTop:'7%',marginBottom:'5%', paddingBottom: '5%', paddingLeft:"10%", paddingRight:'15%'}}>
+
         {Object.keys(probabilityCounts).length > 0 && (
-          <div> {/* Add margin right here */}
+          <div style={{backgroundColor: '#fff', color: '#101418'}}> {/* Add margin right here */}
             <canvas id="probabilityBarChart" width="400" height="400"></canvas>
           </div>
         )}
+        <br />
+        <center>
+      <Typography variant="body1" style={{color: '#939aa9', textAlign : 'center'}}>
+        <b>Last month prediction accuracy</b>
+      </Typography> </center>
+      </div>
 
-      </div>
-      </div>
   );
 };
 

@@ -56,16 +56,15 @@ const EmployeeTable = ({ jsonData }) => {
   };
 
   return (
-    <Box sx={{ marginTop: '20px' }}>
-      <Paper sx={{ marginTop: '20px' }}>
+
         <MUIDataTable
           title={<h1 style ={{fontFamily: 'Arial', marginLeft: '35%'}}>Predicted Employee's Details</h1>}
           data={data}
           columns={columns}
           options={options}
+          style={{ width:'70%', marginTop: '50px', marginBottom: '50px', border: '1px solid white', borderRadius: '25px'}}
         />
-      </Paper>
-    </Box>
+
   );
 };
 

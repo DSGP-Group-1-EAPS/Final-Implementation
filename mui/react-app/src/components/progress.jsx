@@ -6,10 +6,11 @@ import Box from '@mui/material/Box';
 
 
 
+
 function CircularProgressWithLabel({ value, targetProgress }) {
   return (
-    <Box sx={{ position: 'relative', display: 'inline-flex', paddingLeft: '10%', paddingTop: '8%' }}>
-      <CircularProgress color="secondary" variant="determinate" size={350} thickness={8} value={value} />
+    <Box sx={{ position: 'relative', display: 'inline-flex', paddingTop: '8%' }}>
+      <CircularProgress color="secondary" variant="determinate" size={300} thickness={8} value={value} />
       <Box
         sx={{
           top: 0,
@@ -21,19 +22,17 @@ function CircularProgressWithLabel({ value, targetProgress }) {
           alignItems: 'center',
           justifyContent: 'center',
           color: 'grey.500',
-          paddingLeft: '32%',
+          paddingLeft: '20%',
           paddingTop: "30%"
         }}
       >
-        <Typography variant="caption" component="div" color="text.secondary">
-          {`${Math.round(value)}%`}
-        </Typography>
+
         {value >= 50 && (
           <Typography
             variant="body1"
             component="div"
             color="white"
-            sx={{ position: 'absolute', zIndex: 1, fontSize: "75px", marginTop: "5%", marginBottom: "20%", marginRight: "30%", marginLeft: "13%", fontColor:"#101418"}}
+            sx={{ position: 'absolute', zIndex: 1, fontSize: "75px", marginTop: "5%", marginBottom: "20%", marginRight: "30%", marginLeft: "13%", color:"#101418"}}
           >
             {`${targetProgress}%`}
           </Typography>
@@ -70,9 +69,11 @@ export default function Progress({ jsonData }) {
   }, [progress, targetProgress]);
 
   return (
-    <div style={{    backgroundColor: '#fff', color: '#101418', border: '1px solid #101418'}}>
+    <div style={{    backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', borderRadius: '20px', paddingTop:'10%'}}>
       <CircularProgressWithLabel value={progress} targetProgress={targetProgress} />
-      <h1 style={{ fontFamily: 'Arial', textAlign: 'center' }}>Last month <br />prediction accuracy</h1>
+            <Typography variant="body1" style={{marginTop: '8px', color: '#939aa9', textAlign : 'center',paddingTop:"5%", paddingBottom:'15%'}}>
+        <b>Last month prediction accuracy</b>
+      </Typography>
 
     </div>
   );

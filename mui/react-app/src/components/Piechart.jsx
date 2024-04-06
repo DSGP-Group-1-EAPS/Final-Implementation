@@ -7,6 +7,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
 
 const Piechart = ({ jsonData }) => {
   const [departmentCounts, setDepartmentCounts] = useState({});
@@ -115,12 +116,16 @@ const Piechart = ({ jsonData }) => {
 
   return (
 <>
+        <div style={{backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', width: 'auto', borderRadius: '20px', margineLeft:"15%"}}><center>
         {Object.keys(departmentCounts).length > 0 && (
-          <div style={{ width: '85%' }}>
+          <div style={{backgroundColor: '#fff', color: '#101418', width: '80%'}}>
             <canvas id="departmentPieChart" width="400" height="400"></canvas>
           </div>
-        )}
-
+        )}</center>
+      <Typography variant="body1" style={{marginTop: '8px', color: '#939aa9', textAlign : 'center', marginBottom:"15%"}}>
+        <b>Last month prediction accuracy</b>
+      </Typography>
+        </div>
 </>
   );
 };

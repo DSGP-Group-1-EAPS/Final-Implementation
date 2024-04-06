@@ -89,24 +89,20 @@ export default function HomeBody() {
 
   return (
     <center>
+    <h1 style={{ fontFamily: 'Arial', marginBottom: '3%', marginTop: '3%', fontSize:"50px" }}>Employees Absenteeism Prediction for the Next Month</h1>
     <table style={{ width:'100%' }}>
     <tr>
-    <td style={{ paddingLeft:'5%', paddingRight:'5%' }}><CounterComponent data={jsonData} total={200} department={1} label={"Total absenteeism prediction for MAT Team"} /> </td>
-    <td style={{ paddingLeft:'5%', paddingRight:'5%' }}><CounterComponent data={jsonData} total={200} department={0} label={"Total absenteeism prediction for Jumper Team"} /> </td>
-    <td style={{ paddingLeft:'5%', paddingRight:'5%' }}><CounterComponent data={jsonData} total={200} department={2} label={"Total absenteeism prediction for Sewing Team"} /> </td>
+    <td style={{ paddingLeft:'2%', paddingRight:'2%' }}><CounterComponent data={jsonData} total={241} department={1} label={<b>Total absenteeism prediction for MAT Team</b>} /> </td>
+    <td style={{ paddingLeft:'2%', paddingRight:'2%'  }}><CounterComponent data={jsonData} total={268} department={0} label={<b>Total absenteeism prediction for Jumper Team</b>} /> </td>
+    <td style={{ paddingLeft:'2%', paddingRight:'2%'  }}><center><CounterComponent data={jsonData} total={3491} department={2} label={<b>Total absenteeism prediction for Sewing Team</b>} /> </center></td>
     </tr>
+     <tr>
+          <td style={{ paddingLeft:'2%', paddingRight:'1%'}}><center>{displayComponents.progress && <Progress jsonData={jsonData}/>}</center></td>
+          <td style={{ paddingLeft:'2%', paddingRight:'2%' }}>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</td>
+          <td style={{ paddingLeft:'2%', paddingRight:'2%' }}>{displayComponents.barchart && <Barchart jsonData={jsonData} predictions={predictions} />}</td>
+        </tr>
     </table>
 
-      <table style={{ width:'100%' }}>
-        <tr>
-          <td><center>{displayComponents.progress && <Progress jsonData={jsonData}/>}</center></td>
-          <td><center>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</center></td>
-          <td><center>{displayComponents.barchart && <Barchart jsonData={jsonData} predictions={predictions} />}</center></td>
-        </tr>
-        <tr>
-        <td></td>
-        </tr>
-      </table>
       <div style={{ width:'70%', marginTop: '50px', marginBottom: '50px' }}>
       {displayComponents.table1 && <EmployeeTable jsonData={jsonData} predictions={predictions} />}
       </div>

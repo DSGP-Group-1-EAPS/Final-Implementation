@@ -65,7 +65,7 @@ const Charts = ({ departmentCounts, probabilityCounts }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <div style={{ width: '20%' }}>
+      <div style={{backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', width: '20%'}}>
         <canvas ref={departmentChartRef} id="departmentPieChart" width="400" height="400"></canvas>
       </div>
 
