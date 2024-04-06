@@ -29,10 +29,14 @@ function CircularProgressWithLabel({ value, targetProgress }) {
 
         {value >= 50 && (
           <Typography
-            variant="body1"
+            variant="h1"
             component="div"
             color="white"
-            sx={{ position: 'absolute', zIndex: 1, fontSize: "75px", marginTop: "5%", marginBottom: "20%", marginRight: "30%", marginLeft: "13%", color:"#101418"}}
+            sx={{    fontSize: '4rem',
+    fontWeight: 'bold',
+    color:'#212636',
+
+            position: 'absolute', zIndex: 1, fontSize: "75px", marginTop: "5%", marginBottom: "20%", marginRight: "30%", marginLeft: "13%", color:"#101418"}}
           >
             {`${targetProgress}%`}
           </Typography>
@@ -69,9 +73,9 @@ export default function Progress({ jsonData }) {
   }, [progress, targetProgress]);
 
   return (
-    <div style={{    backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', borderRadius: '20px', paddingTop:'10%'}}>
+    <div style={{backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', borderRadius: '20px', paddingTop:'5%'}}>
       <CircularProgressWithLabel value={progress} targetProgress={targetProgress} />
-            <Typography variant="body1" style={{marginTop: '8px', color: '#939aa9', textAlign : 'center',paddingTop:"5%", paddingBottom:'15%'}}>
+            <Typography variant="body1" style={{marginTop: '8px', color: '#939aa9', textAlign : 'center',paddingTop:"5%", paddingBottom:'25%'}}>
         <b>Last month prediction accuracy</b>
       </Typography>
 

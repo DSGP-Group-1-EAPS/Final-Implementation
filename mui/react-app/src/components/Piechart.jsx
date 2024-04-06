@@ -116,13 +116,13 @@ const Piechart = ({ jsonData }) => {
 
   return (
 <>
-        <div style={{backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', width: 'auto', borderRadius: '20px', margineLeft:"15%"}}><center>
+        <div style={{backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', width: 'auto', borderRadius: '20px', margineLeft:"15%", margineTop:'35%',paddingTop:'5%'}}><center>
         {Object.keys(departmentCounts).length > 0 && (
           <div style={{backgroundColor: '#fff', color: '#101418', width: '80%'}}>
             <canvas id="departmentPieChart" width="400" height="400"></canvas>
           </div>
         )}</center>
-      <Typography variant="body1" style={{marginTop: '8px', color: '#939aa9', textAlign : 'center', marginBottom:"15%"}}>
+      <Typography variant="body1" style={{marginTop: '5%', color: '#939aa9', textAlign : 'center', marginBottom:"5%"}}>
         <b>Last month prediction accuracy</b>
       </Typography>
         </div>

@@ -97,8 +97,8 @@ export default function HomeBody() {
     <td style={{ paddingLeft:'2%', paddingRight:'2%'  }}><center><CounterComponent data={jsonData} total={3491} department={2} label={<b>Total absenteeism prediction for Sewing Team</b>} /> </center></td>
     </tr>
      <tr>
-          <td style={{ paddingLeft:'2%', paddingRight:'1%'}}><center>{displayComponents.progress && <Progress jsonData={jsonData}/>}</center></td>
-          <td style={{ paddingLeft:'2%', paddingRight:'2%' }}>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</td>
+          <td style={{ paddingLeft:'2%', paddingRight:'1%', paddingTop:'3%'}}><center>{displayComponents.progress && <Progress jsonData={jsonData}/>}</center></td>
+          <td style={{ paddingLeft:'2%', paddingRight:'2%', paddingTop:'4%' }}>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</td>
           <td style={{ paddingLeft:'2%', paddingRight:'2%' }}>{displayComponents.barchart && <Barchart jsonData={jsonData} predictions={predictions} />}</td>
         </tr>
     </table>
