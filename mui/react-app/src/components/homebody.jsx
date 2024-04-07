@@ -51,10 +51,10 @@ export default function HomeBody() {
         <Typography variant="h6" component={Link} to="/" style={{ textDecoration: 'none', color: 'inherit', margin: '0 20px'}}>
           Home
         </Typography>
-        <Typography variant="h6" component={Link} to="/about" style={{ textDecoration: 'none', color: 'inherit', margin: '0 20px' }}>
+        <Typography variant="h6" component={Link} to="/contactus.html" style={{ textDecoration: 'none', color: 'inherit', margin: '0 20px' }}>
           About
         </Typography>
-        <Typography variant="h6" component={Link} to="/contact" style={{ textDecoration: 'none', color: 'inherit', margin: '0 20px' }}>
+        <Typography variant="h6" component={Link} to="/contactus.html" style={{ textDecoration: 'none', color: 'inherit', margin: '0 20px' }}>
           Contact
         </Typography>
         {/* Add more navigation links as needed */}
