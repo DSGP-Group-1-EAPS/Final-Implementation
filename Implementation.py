@@ -15,17 +15,38 @@ CORS(app)
 
 data = None
 server_status = "Processing"
+s3 = None
 
 rf_selected_features = ['Encoded Code', 'Encoded Department', 'YearsWorked', 'DayOfWeek',
                         'LeaveMonth', 'LeaveYear', 'Encoded Reason', 'Encoded Status',
                         'Encoded Absenteeism Type', 'Encoded Shift', 'MonthlyDeptTotal']
 
 
+def read_aws_config(filename):
+    aws_config = {}
+    with open(filename, 'r') as file:
+        for line in file:
+            key, value = line.strip().split('=')
+            aws_config[key.strip()] = value.strip()
+    return aws_config
+
+
+config = read_aws_config('s3config.txt')
+access_key = config['ACCESS_KEY']
+secret_key = config['SECRET_KEY']
+
+access_key = str(access_key)
+secret_key = str(secret_key)
+
+# Creating a Boto3 client to connect to S3
+s3 = get_s3_access(access_key, secret_key, 'ap-south-1')
+
+print("Connected to S3")
+
 # Define the main route
 @app.route('/', methods=['POST'])
 def main():
-    global data, updated_df
-    global server_status
+    global data, updated_df, s3, server_status
 
     # Define the months to get the month name
     months = {
@@ -71,25 +92,9 @@ def main():
     else:
         predicted_next_year = year
 
-    server_status = "Connecting to S3"
-    # Read the AWS credentials from a file
-    def read_aws_config(filename):
-        aws_config = {}
-        with open(filename, 'r') as file:
-            for line in file:
-                key, value = line.strip().split('=')
-                aws_config[key.strip()] = value.strip()
-        return aws_config
 
-    config = read_aws_config('s3config.txt')
-    access_key = config['ACCESS_KEY']
-    secret_key = config['SECRET_KEY']
 
-    access_key = str(access_key)
-    secret_key = str(secret_key)
 
-    # Creating a Boto3 client to connect to S3
-    s3 = get_s3_access(access_key, secret_key, 'ap-south-1')
 
     server_status = "Loading Data"
 
@@ -322,6 +327,24 @@ def get_server_status():
     global server_status  # Access the global variable within the function
     print("Server Status : ", server_status)
     return server_status
+
+@app.route('/last_month_predicts')
+def get_last_month_predicts():
+
+    global s3
+    previous_month_prediction_buffer = BytesIO()
+    monthly_dept_total = download_dataset('Datasets/cleaned_Monthly_Dept_Total.xlsx', s3, 'eapss3', previous_month_prediction_buffer)
+
+    last_data = {
+        'employee_codes': monthly_dept_total['Employee Code'].tolist(),
+        'departments': monthly_dept_total['Department'].tolist(),
+        'probabilities': monthly_dept_total['Mean_Proba'].tolist()
+        # 'majority votes': filtered_df_unique['Majority_Vote'].tolist()
+    }
+    print(last_data)
+
+
+    return last_data
 
 
 if __name__ == '__main__':
