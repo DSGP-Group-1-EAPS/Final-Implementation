@@ -79,7 +79,7 @@ export default function HomeBody_last() {
 
 return (
   <center>
-    <h1 style={{ fontFamily: 'Arial', marginBottom: '3%', marginTop: '3%', fontSize: "50px" }}>Employees Absenteeism Prediction for the Next Month</h1>
+    <h1 style={{ fontFamily: 'Arial', marginBottom: '3%', marginTop: '3%', fontSize: "50px" }}>Employees Absenteeism Prediction Report</h1>
     <table style={{ width: '100%' }}>
       <tr>
         <td style={{ paddingLeft: '2%', paddingRight: '2%' }}><CounterComponent data={jsonData} total={241} department={1} label={<b>Total absenteeism prediction for MAT Team</b>} /> </td>

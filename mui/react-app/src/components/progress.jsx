@@ -74,11 +74,13 @@ export default function Progress({ jsonData }) {
 
   return (
     <div style={{backgroundColor: '#fff', color: '#101418', border: '1px solid #101418', borderRadius: '20px', paddingTop:'5%'}}>
+      <center>
       <CircularProgressWithLabel value={progress} targetProgress={targetProgress} />
             <Typography variant="body1" style={{marginTop: '8px', color: '#939aa9', textAlign : 'center',paddingTop:"5%", paddingBottom:'25%'}}>
         <b>Last month prediction accuracy</b>
       </Typography>
+      </center>
+      </div>
 
-    </div>
   );
 }
