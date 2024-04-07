@@ -109,6 +109,7 @@ const defaultTheme = createTheme({
                 color="secondary"
                 focused
                 onChange={handleEmailChange}
+                inputProps={{ style: { color: '#ffc436' } }}
 
 
               />
@@ -124,6 +125,7 @@ const defaultTheme = createTheme({
   value={password}
   onChange={handlePasswordChange}
   color="secondary"
+  inputProps={{ style: { color: '#ffc436' } }}
   focused
 
 />
