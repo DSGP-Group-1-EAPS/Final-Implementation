@@ -280,6 +280,8 @@ def main():
 
     upload_file_to_s3(filtered_df_unique, 'eapss3',
                       f"Datasets/Predictions/{df_selected['LeaveYear'][0]}-{df_selected['LeaveMonth'][0]}.xlsx")
+    upload_file_to_s3(filtered_df_unique, 'eapss3',
+                      f"Datasets/Predictions/last_month_predictions.xlsx")
 
     # Create a dictionary with the data
     data = {
@@ -301,7 +303,7 @@ def main():
 @app.route('/data')
 def get_data():
     global data
-    print(data)
+    # print(data)
     accuracy = 88
     data = {
         'lmpa': [accuracy],
@@ -318,7 +320,8 @@ def get_data():
                           0.7839375310055953, 0.7246816120865183, 0.7064476391168176, 0.7547719587083508,
                           0.7292411673152369, 0.8494465552449885, 0.7995627327146254, 0.7737517607724013]
     }
-
+    # df = pd.DataFrame(data)
+    # print(df)
     return jsonify(data)
 
 
