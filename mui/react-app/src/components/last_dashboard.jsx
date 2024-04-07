@@ -6,9 +6,18 @@ import EmployeeTable from './EmployeeTable';
 import Progress from './progress';// Import the EmployeeTable component
 import Piechart from './Piechart';
 import Barchart from './Barchart';
+import DataTableFromFile from './datatable';
 import CounterComponent from './counter';// Import the EmployeeTable component
+import { DataGrid } from '@mui/x-data-grid';
 
 export default function HomeBody_last() {
+   const columns = [
+  { field: 'id', headerName: 'Employee Code', width: 150 },
+  { field: 'department', headerName: 'Department', width: 150 },
+  { field: 'probability', headerName: 'Probability', width: 150 },
+];
+
+
   const [jsonData, setJsonData] = useState(null);
   const [predictions, setPredictions] = useState(null); // State for predictions
   const [displayComponents, setDisplayComponents] = useState({
@@ -35,25 +44,6 @@ export default function HomeBody_last() {
       console.error('Error fetching data:', error);
     }
 
-    try {
-      const file = fileInputRef.current.files[0];
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('http://127.0.0.1:8080/last_month_predicts', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch predictions');
-      }
-
-      const predictionsData = await response.json();
-      setPredictions(predictionsData);
-    } catch (error) {
-      console.error('Error fetching predictions:', error);
-    }
   };
 
   useEffect(() => {
@@ -73,10 +63,10 @@ export default function HomeBody_last() {
       }, 300),
       setTimeout(() => {
         setDisplayComponents(prevState => ({ ...prevState, piechart: true }));
-      }, 400),
+      }, 600),
       setTimeout(() => {
         setDisplayComponents(prevState => ({ ...prevState, barchart: true }));
-      }, 500)
+      }, 800)
     ];
 
     return () => {
@@ -87,27 +77,30 @@ export default function HomeBody_last() {
 
 
 
-  return (
-    <center>
-    <h1 style={{ fontFamily: 'Arial', marginBottom: '3%', marginTop: '3%', fontSize:"50px" }}>Last Month Employees Absenteeism Prediction</h1>
-    <table style={{ width:'100%' }}>
-    <tr>
-    <td style={{ paddingLeft:'2%', paddingRight:'2%' }}><CounterComponent data={jsonData} total={241} department={1} label={<b>Total absenteeism prediction for MAT Team</b>} /> </td>
-    <td style={{ paddingLeft:'2%', paddingRight:'2%'  }}><CounterComponent data={jsonData} total={268} department={0} label={<b>Total absenteeism prediction for Jumper Team</b>} /> </td>
-    <td style={{ paddingLeft:'2%', paddingRight:'2%'  }}><center><CounterComponent data={jsonData} total={3491} department={2} label={<b>Total absenteeism prediction for Sewing Team</b>} /> </center></td>
-    </tr>
+return (
+  <center>
+    <h1 style={{ fontFamily: 'Arial', marginBottom: '3%', marginTop: '3%', fontSize: "50px" }}>Employees Absenteeism Prediction for the Next Month</h1>
+    <table style={{ width: '100%' }}>
+      <tr>
+        <td style={{ paddingLeft: '2%', paddingRight: '2%' }}><CounterComponent data={jsonData} total={241} department={1} label={<b>Total absenteeism prediction for MAT Team</b>} /> </td>
+        <td style={{ paddingLeft: '2%', paddingRight: '2%' }}><CounterComponent data={jsonData} total={268} department={0} label={<b>Total absenteeism prediction for Jumper Team</b>} /> </td>
+        <td style={{ paddingLeft: '2%', paddingRight: '2%' }}><center><CounterComponent data={jsonData} total={3491} department={2} label={<b>Total absenteeism prediction for Sewing Team</b>} /> </center></td>
+      </tr>
 
     </table>
-    <table style={{ width:'100%' }}>
-         <tr>
-           <td style={{ paddingLeft:'2%', paddingRight:'2%', paddingTop:'4%' }}>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</td>
+    <table>
+       <tr>
+          <td style={{ paddingLeft:'2%', paddingRight:'2%', paddingTop:'4%' }}>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</td>
           <td style={{ paddingLeft:'2%', paddingRight:'2%' }}>{displayComponents.barchart && <Barchart jsonData={jsonData} predictions={predictions} />}</td>
         </tr>
     </table>
 
+    {jsonData && (
       <div style={{ width:'70%', marginTop: '50px', marginBottom: '50px' }}>
       {displayComponents.table1 && <EmployeeTable jsonData={jsonData} predictions={predictions} />}
       </div>
-    </center>
-  );
+    )}
+  </center>
+);
+
 }

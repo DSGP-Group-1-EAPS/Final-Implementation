@@ -43,6 +43,7 @@ s3 = get_s3_access(access_key, secret_key, 'ap-south-1')
 
 print("Connected to S3")
 
+
 # Define the main route
 @app.route('/', methods=['POST'])
 def main():
@@ -92,10 +93,6 @@ def main():
     else:
         predicted_next_year = year
 
-
-
-
-
     server_status = "Loading Data"
 
     monthly_dept_total_buffer = BytesIO()
@@ -140,7 +137,7 @@ def main():
     prev_leave_month = last_record['LeaveMonth']
     print(prev_leave_month)
 
-    accuracy_model=0
+    accuracy_model = 0
     prev_month_data_predict_buffer = BytesIO()
     try:
         prevs_month_predict = download_dataset(f'Datasets/Predictions/{prev_leave_year}-{prev_leave_month}.xlsx',
@@ -303,25 +300,11 @@ def main():
 @app.route('/data')
 def get_data():
     global data
-    # print(data)
-    # accuracy = 88
-    # data = {
-    #     'lmpa': [accuracy],
-    #     'employee_codes': [2278, 393, 4102, 1965, 1820, 1276, 2818, 1602, 243, 2306, 2766, 3305, 320, 2474, 194, 4036,
-    #                        2423, 4032, 3895, 3890, 2365, 2830, 1072, 3308, 3984, 1316, 2976, 729, 4096, 2152, 1442,
-    #                        3771],
-    #     'departments': [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2],
-    #     'probabilities': [0.8235946860541531, 0.7220389012594436, 0.8709247978728859, 0.8274388992349831,
-    #                       0.8284207062015673, 0.7537164492301901, 0.8890992019760476, 0.8429063033729193,
-    #                       0.8125052865108341, 0.7700538058252654, 0.7664137895119737, 0.8300954933374678,
-    #                       0.8025734534127148, 0.832772466572902, 0.8212819013423176, 0.913070840422756,
-    #                       0.8422674834454722, 0.913070840422756, 0.907251090059841, 0.9062814563662628,
-    #                       0.7254290202396856, 0.8499682022175709, 0.7185136268723893, 0.7694244345341166,
-    #                       0.7839375310055953, 0.7246816120865183, 0.7064476391168176, 0.7547719587083508,
-    #                       0.7292411673152369, 0.8494465552449885, 0.7995627327146254, 0.7737517607724013]
-    # }
-    # df = pd.DataFrame(data)
-    # print(df)
+    print(data)
+
+
+    print(type(data))
+
     return jsonify(data)
 
 
@@ -331,35 +314,24 @@ def get_server_status():
     print("Server Status : ", server_status)
     return server_status
 
+
 @app.route('/last_month_predicts')
 def get_last_month_predicts():
-
     global s3
     previous_month_prediction_buffer = BytesIO()
-    monthly_dept_total = download_dataset('Datasets/Predictions/last_month_predictions.xlsx', s3, 'eapss3', previous_month_prediction_buffer)
+    monthly_dept_total = download_dataset('Datasets/Predictions/last_month_predictions.xlsx', s3, 'eapss3',
+                                          previous_month_prediction_buffer)
 
     last_data = {
-        'employee_codes': [2278, 393, 4102, 1965, 1820, 1276, 2818, 1602, 243, 2306, 2766, 3305, 320, 2474, 194, 4036,
-                           2423, 4032, 3895, 3890, 2365, 2830, 1072, 3308, 3984, 1316, 2976, 729, 4096, 2152, 1442,
-                           3771],
-        'departments': [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2],
-        'probabilities': [0.8235946860541531, 0.7220389012594436, 0.8709247978728859, 0.8274388992349831,
-                          0.8284207062015673, 0.7537164492301901, 0.8890992019760476, 0.8429063033729193,
-                          0.8125052865108341, 0.7700538058252654, 0.7664137895119737, 0.8300954933374678,
-                          0.8025734534127148, 0.832772466572902, 0.8212819013423176, 0.913070840422756,
-                          0.8422674834454722, 0.913070840422756, 0.907251090059841, 0.9062814563662628,
-                          0.7254290202396856, 0.8499682022175709, 0.7185136268723893, 0.7694244345341166,
-                          0.7839375310055953, 0.7246816120865183, 0.7064476391168176, 0.7547719587083508,
-                          0.7292411673152369, 0.8494465552449885, 0.7995627327146254, 0.7737517607724013]
+        'employee_codes': monthly_dept_total['Employee Code'].tolist(),
+        'departments': monthly_dept_total['Department'].tolist(),
+        'probabilities': monthly_dept_total['Mean_Proba'].tolist()
+        # 'majority votes': filtered_df_unique['Majority_Vote'].tolist()
     }
-    # last_data = {
-    #     'employee_codes': monthly_dept_total['Employee Code'].tolist(),
-    #     'departments': monthly_dept_total['Department'].tolist(),
-    #     'probabilities': monthly_dept_total['Mean_Proba'].tolist()
-    #     # 'majority votes': filtered_df_unique['Majority_Vote'].tolist()
-    # }
-    print(last_data)
 
+
+    print(last_data)
+    print(type(last_data))
 
     return jsonify(last_data)
 

@@ -5,7 +5,7 @@ import { Box } from '@mui/system';
 
 
 const EmployeeTable = ({ jsonData }) => {
-
+    console.log(jsonData)
   const columns = [
     {
       name: "employeeCode",

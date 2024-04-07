@@ -35,25 +35,6 @@ export default function HomeBody() {
       console.error('Error fetching data:', error);
     }
 
-    try {
-      const file = fileInputRef.current.files[0];
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('http://127.0.0.1:8080/last_month_predicts', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch predictions');
-      }
-
-      const predictionsData = await response.json();
-      setPredictions(predictionsData);
-    } catch (error) {
-      console.error('Error fetching predictions:', error);
-    }
   };
 
   useEffect(() => {
@@ -97,7 +78,6 @@ export default function HomeBody() {
     <td style={{ paddingLeft:'2%', paddingRight:'2%'  }}><center><CounterComponent data={jsonData} total={3491} department={2} label={<b>Total absenteeism prediction for Sewing Team</b>} /> </center></td>
     </tr>
      <tr>
-          <td style={{ paddingLeft:'2%', paddingRight:'1%', paddingTop:'3%'}}><center>{displayComponents.progress && <Progress jsonData={jsonData}/>}</center></td>
           <td style={{ paddingLeft:'2%', paddingRight:'2%', paddingTop:'4%' }}>{displayComponents.piechart && <Piechart jsonData={jsonData} predictions={predictions} />}</td>
           <td style={{ paddingLeft:'2%', paddingRight:'2%' }}>{displayComponents.barchart && <Barchart jsonData={jsonData} predictions={predictions} />}</td>
         </tr>
