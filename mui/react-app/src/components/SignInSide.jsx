@@ -82,6 +82,8 @@ const defaultTheme = createTheme({
               alignItems: 'center',
             }}
           >
+          <h1 style={{ fontFamily: 'Arial', marginBottom: '10%', marginTop: '3%', fontSize:"65px", color:'#ffc436' }}>E A P S</h1> <br />
+
             <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
