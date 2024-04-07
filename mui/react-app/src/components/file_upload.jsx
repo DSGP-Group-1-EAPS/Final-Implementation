@@ -46,33 +46,14 @@ export default function HomeBody() {
 
   return (
     <>
-    <AppBar position="static" style={{ background: 'transparent', boxShadow: 'none', marginTop:'20px' }}>
-      <Toolbar style={{ justifyContent: 'center' }}>
-        <Typography variant="h6" component={Link} to="/" style={{ textDecoration: 'none', color: 'inherit', margin: '0 20px'}}>
-          Home
-        </Typography>
-        <Typography variant="h6" component={Link} to="/about" style={{ textDecoration: 'none', color: 'inherit', margin: '0 20px' }}>
-          About
-        </Typography>
-        <Typography variant="h6" component={Link} to="/contact" style={{ textDecoration: 'none', color: 'inherit', margin: '0 20px' }}>
-          Contact
-        </Typography>
-        {/* Add more navigation links as needed */}
-      </Toolbar>
-    </AppBar>
+
         <center>
-            <h1 style={{ fontFamily: 'Arial', marginBottom: '3%', marginTop: '3%', fontSize:"75px" }}>Employees Absenteeism Prediction System</h1> <br />
+            <h1 style={{ fontFamily: 'Arial', marginBottom: '3%', marginTop: '3%', fontSize:"50px" }}>Employees Absenteeism Prediction for the Next Month</h1> <br />
+        </center>
+
+      <InputFileUpload inputRef={fileInputRef} />
 
 
-
-      <Button variant="h6" component={Link} to="/file_upload" style={{ textDecoration: 'none', color: '#101418', margin: '5% 30px', backgroundColor:'#FFC436'}}>
-        <h4 style={{ fontFamily: 'Arial', marginBottom: '3%', margin: '3% 5%', fontSize:"35px" }}>Get predictions for next month</h4>
-
-      </Button><br/>
-      <Button variant="h6" component={Link} to="/last_month" style={{ textDecoration: 'none', color: '#101418', margin: '0 30px', backgroundColor:'#FFC436' }}>
-        <h4 style={{ fontFamily: 'Arial', marginBottom: '3%', margin: '3% 5%', fontSize:"35px" }}>View Last month predictions</h4>
-      </Button>
-  </center>
       <center>
 {/*       <Button variant="contained" sx={{ py: 2, px: 4, my: 2, mb: 10, fontWeight: 'bold' }} onClick={handleGetPredictions}> */}
 {/*   Get Predictions */}

@@ -336,7 +336,7 @@ def get_last_month_predicts():
 
     global s3
     previous_month_prediction_buffer = BytesIO()
-    monthly_dept_total = download_dataset('Datasets/cleaned_Monthly_Dept_Total.xlsx', s3, 'eapss3', previous_month_prediction_buffer)
+    monthly_dept_total = download_dataset('Datasets/Predictions/last_month_predictions.xlsx', s3, 'eapss3', previous_month_prediction_buffer)
 
     last_data = {
         'employee_codes': monthly_dept_total['Employee Code'].tolist(),
@@ -347,7 +347,7 @@ def get_last_month_predicts():
     print(last_data)
 
 
-    return last_data
+    return jsonify(last_data)
 
 
 if __name__ == '__main__':

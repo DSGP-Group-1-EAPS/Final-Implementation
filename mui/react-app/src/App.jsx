@@ -32,6 +32,8 @@ import LoginPage from './components/SignInSide';
 import HomeBody from './components/homebody'; // Import your Dashboard component
 import Predict from './components/predict';
 import Dashboard from './components/dashboard';
+import HomeBody_last from './components/last_dashboard';
+import File_upload from './components/file_upload';
 import './App.css';
 
 function App() {
@@ -41,7 +43,9 @@ function App() {
         <Route path="/home" element={<HomeBody />} /> {/* Route to DashboardPage component */}
         <Route path="/dashboard" element={<Dashboard />} /> {/* Route to DashboardPage component */}
         <Route path="/predict" element={<Predict />} /> {/* Route to DashboardPage component */}
-        <Route path="/" element={<LoginPage />} /> {/* Route to LoginPage component */}
+        <Route path="/" element={<LoginPage />} />
+         <Route path="/last_month" element={<HomeBody_last />} />{/* Route to LoginPage component */}
+         <Route path="/file_upload" element={<File_upload />} />{/* Route to LoginPage component */}
       </Routes>
     </Router>
 

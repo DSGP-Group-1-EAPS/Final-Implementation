@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import Button from '@mui/material/Button';
+import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import TextField from '@mui/material/TextField';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link  } from 'react-router-dom';
 
 const InputFileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -40,6 +40,7 @@ const InputFileUpload = () => {
 
   return (
     <div>
+
       <input
         type="file"
         onChange={handleFileChange}
@@ -59,7 +60,7 @@ const InputFileUpload = () => {
             sx={{ py: 2, px: 4, fontWeight: 'bold', width: '80%', paddingTop: '5%', paddingBottom: '5%', fontSize: '2rem', backgroundColor: '#FFC436', color: '#101418', border: '2px solid #FFC436', position: 'relative', '&::after': { content: '""', position: 'absolute', top: '10px', left: '10px', right: '10px', bottom: '10px', border: '2px dashed black', borderRadius: 'inherit' }, '&:hover': { backgroundColor: 'white', color: 'black' } }}
             onClick={handleButtonClick}
           >
-            <div style={{ margin: '5px' }}>{selectedFile ? selectedFile.name : 'Choose File'}</div>
+            <div style={{ margin: '5px', fontStyle: 'italic'}}>{selectedFile ? selectedFile.name : 'Upload current month Absenteeism report '}</div>
           </Button>
         </div>
         <div style={{ marginTop: '50px' }}>
