@@ -24,7 +24,7 @@ export default function HomeBody_last() {
   const handleGetPredictions = async () => {
     try {
       // Fetch JSON data from Flask when the button is clicked
-      const response = await fetch('http://127.0.0.1:8080/data');
+      const response = await fetch('http://127.0.0.1:8080/last_month_predicts');
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
