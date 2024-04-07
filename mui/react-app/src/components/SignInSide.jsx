@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { purple } from '@mui/material/colors';
 
 function LoginPage() {
   const [email, setEmail] = React.useState('');
@@ -38,7 +39,16 @@ function LoginPage() {
     }
   };
 
-  const defaultTheme = createTheme();
+const defaultTheme = createTheme({
+  palette: {
+    primary: {
+      main: purple[500],
+    },
+    secondary: {
+      main: '#ffc436',
+    },
+  },
+});
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -58,7 +68,11 @@ function LoginPage() {
             backgroundPosition: 'center',
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square
+        sx={{
+            backgroundColor:'#101418'
+        }}
+        >
           <Box
             sx={{
               my: 8,
@@ -68,10 +82,10 @@ function LoginPage() {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h1" variant="h5" sx={{color:'#ffc436'}}>
               Sign in
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -90,26 +104,34 @@ function LoginPage() {
                 autoComplete="Username"
                 autoFocus
                 value={email}
+                color="secondary"
+                focused
                 onChange={handleEmailChange}
+
+
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={handlePasswordChange}
-              />
+<TextField
+  margin="normal"
+  required
+  fullWidth
+  name="password"
+  label="Password"
+  type="password"
+  id="password"
+  autoComplete="current-password"
+  value={password}
+  onChange={handlePasswordChange}
+  color="secondary"
+  focused
+
+/>
+
 
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 3, mb: 2, bgcolor:'#ffc436', color:'#101418'}}
               >
                 Sign In
               </Button>

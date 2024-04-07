@@ -74,7 +74,7 @@ export default function HomeBody() {
       </Button>
   </center>
       <center>
-{/*       <Button variant="contained" sx={{ py: 2, px: 4, my: 2, mb: 10, fontWeight: 'bold' }} onClick={handleGetPredictions}> */}
+{/*  <Button variant="contained" sx={{ py: 2, px: 4, my: 2, mb: 10, fontWeight: 'bold' }} onClick={handleGetPredictions}> */}
 {/*   Get Predictions */}
 {/* </Button> */}
 
