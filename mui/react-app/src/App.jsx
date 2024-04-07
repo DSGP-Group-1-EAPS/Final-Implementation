@@ -34,6 +34,7 @@ import Predict from './components/predict';
 import Dashboard from './components/dashboard';
 import HomeBody_last from './components/last_dashboard';
 import File_upload from './components/file_upload';
+import AboutUsPage from './components/about';
 import './App.css';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
         <Route path="/" element={<LoginPage />} />
          <Route path="/last_month" element={<HomeBody_last />} />{/* Route to LoginPage component */}
          <Route path="/file_upload" element={<File_upload />} />{/* Route to LoginPage component */}
+         <Route path="/about" element={<AboutUsPage />} />{/* Route to LoginPage component */}
       </Routes>
     </Router>
 

@@ -103,7 +103,6 @@ const defaultTheme = createTheme({
                 id="email"
                 label="Username"
                 name="username"
-                autoComplete="Username"
                 autoFocus
                 value={email}
                 color="secondary"
@@ -121,7 +120,6 @@ const defaultTheme = createTheme({
   label="Password"
   type="password"
   id="password"
-  autoComplete="current-password"
   value={password}
   onChange={handlePasswordChange}
   color="secondary"
